@@ -11,6 +11,7 @@ import QrScanner from "./components/QrScanner";
 import BottomNav from "./components/BottomNav";
 import Friends from "./router/Friends";
 import FriendDetails from "./router/FriendDetails";
+import History from "./router/History"; // 👈 Import it
 
 const AppWrapper: React.FC = () => {
   const location = useLocation();
@@ -25,6 +26,7 @@ const AppWrapper: React.FC = () => {
         <Route path="/qr" element={<QrScanner />} />
         <Route path="/friends" element={<Friends />} />
         <Route path="/friend-details" element={<FriendDetails />} />
+        <Route path="/history" element={<History />} />
       </Routes>
 
       {!hideNavRoutes.includes(location.pathname) && <BottomNav />}
