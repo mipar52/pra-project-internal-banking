@@ -1,0 +1,8 @@
+.login-screen {
+    padding: 2rem;
+  }
+  
+  input::placeholder {
+    color: #aaa !important;
+  }
+  

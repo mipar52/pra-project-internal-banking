@@ -1,11 +1,18 @@
-.floating-button {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-    z-index: 999;
-  }
-  
+.dashboard-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dashboard-header {
+  position: sticky;
+  top: 0;
+  z-index: 1030; /* higher than default */
+}
+
+.dashboard-content {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-bottom: 70px; /* space for bottom nav */
+}

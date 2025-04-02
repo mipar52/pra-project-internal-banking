@@ -1,6 +1,7 @@
 // src/Login.tsx
 import React, { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import algebraLogo from "../assets/algebra-logo.png";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -12,20 +13,28 @@ const Login: React.FC = () => {
     e.preventDefault();
     setLoading(true);
 
-    // NOTE: This is temporary to simulate the login (fetching the info from backend/db)
+    // Simulated login
     setTimeout(() => {
       setLoading(false);
+      localStorage.setItem("isLoggedIn", "true");
       navigate("/dashboard");
     }, 2000);
   };
 
   return (
     <div
-      className="container d-flex justify-content-center align-items-center"
-      style={{ height: "100vh" }}
+      className="d-flex flex-column align-items-center justify-content-center text-white bg-black"
+      style={{ minHeight: "100vh", padding: "1rem" }}
     >
+      <img
+        src={algebraLogo}
+        alt="Algebra Logo"
+        className="mb-4"
+        style={{ width: 100 }}
+      />
+
       <div
-        className="card p-4 shadow"
+        className="card bg-dark text-white p-4 shadow"
         style={{ width: "100%", maxWidth: "400px" }}
       >
         <h3 className="text-center mb-4">Login</h3>
@@ -36,7 +45,7 @@ const Login: React.FC = () => {
             </label>
             <input
               type="email"
-              className="form-control"
+              className="form-control bg-black text-white border-secondary"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -50,7 +59,7 @@ const Login: React.FC = () => {
             </label>
             <input
               type="password"
-              className="form-control"
+              className="form-control bg-black text-white border-secondary"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
