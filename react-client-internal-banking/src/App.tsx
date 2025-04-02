@@ -1,7 +1,8 @@
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import Login from "./routes/Login";
-import Dashboard from "./routes/Dashboard";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./router/Login";
+import Dashboard from "./router/Dashboard";
 import TopUp from "./router/TopUp";
+import QrScanner from "./components/QrScanner";
 
 const App: React.FC = () => {
   return (
@@ -10,6 +11,7 @@ const App: React.FC = () => {
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/topup" element={<TopUp />} />
+        <Route path="/qr" element={<QrScanner />} />
       </Routes>
     </Router>
   );
