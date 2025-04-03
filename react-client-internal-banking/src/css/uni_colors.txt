@@ -1,0 +1,9 @@
+🟣 #A00062 – Main brand pink
+
+🧡 #F58220 – Orange (used in cards)
+
+🔵 #00AEEF – Light blue (button color)
+
+⚫ #1D1D1B – Dark background
+
+⚪ #FFFFFF – White text on dark

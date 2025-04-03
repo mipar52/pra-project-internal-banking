@@ -11,7 +11,10 @@ import QrScanner from "./components/QrScanner";
 import BottomNav from "./components/BottomNav";
 import Friends from "./router/Friends";
 import FriendDetails from "./router/FriendDetails";
-import History from "./router/History"; // 👈 Import it
+import History from "./router/History";
+import Settings from "./router/Settings";
+import PaymentOptionScreen from "./router/PaymentOptionScreen";
+import EnterManually from "./router/EnterManually";
 
 const AppWrapper: React.FC = () => {
   const location = useLocation();
@@ -27,6 +30,9 @@ const AppWrapper: React.FC = () => {
         <Route path="/friends" element={<Friends />} />
         <Route path="/friend-details" element={<FriendDetails />} />
         <Route path="/history" element={<History />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/enter-manually" element={<EnterManually />} />
+        <Route path="/payment-options" element={<PaymentOptionScreen />} />
       </Routes>
 
       {!hideNavRoutes.includes(location.pathname) && <BottomNav />}
