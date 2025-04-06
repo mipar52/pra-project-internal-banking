@@ -2,6 +2,15 @@ import React, { useState } from "react";
 import algebraLogo from "../assets/algebra-logo.png";
 import "../css/EnterManully.css";
 
+const categories = [
+  { label: "Food", emoji: "🍽️" },
+  { label: "Drinks", emoji: "🥤" },
+  { label: "Parking", emoji: "🅿️" },
+  { label: "Bills", emoji: "📄" },
+  { label: "Tuition", emoji: "🎓" },
+  { label: "Other", emoji: "❓" },
+];
+
 const EnterManually: React.FC = () => {
   const [formData, setFormData] = useState({
     recipientName: "",
@@ -20,6 +29,10 @@ const EnterManually: React.FC = () => {
 
   const handleSubmit = () => {
     console.log("Payment submitted:", formData);
+  };
+
+  const handleCategorySelect = (label: string) => {
+    setFormData((prev) => ({ ...prev, description: label }));
   };
 
   return (
@@ -94,16 +107,25 @@ const EnterManually: React.FC = () => {
             />
           </div>
         </div>
+
+        {/* Payment Description Buttons */}
         <div className="mb-3">
           <label className="form-label">Payment Description</label>
-          <input
-            className="form-control"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Rata 7."
-          />
+          <div className="d-grid gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat.label}
+                className={`btn btn-outline-light text-start ${
+                  formData.description === cat.label ? "active bg-info" : ""
+                }`}
+                onClick={() => handleCategorySelect(cat.label)}
+              >
+                {cat.emoji} {cat.label}
+              </button>
+            ))}
+          </div>
         </div>
+
         <div style={{ height: "100px" }} /> {/* Safe space for nav */}
       </div>
 

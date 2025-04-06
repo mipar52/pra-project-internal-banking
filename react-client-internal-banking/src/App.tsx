@@ -17,6 +17,9 @@ import PaymentOptionScreen from "./router/PaymentOptionScreen";
 import EnterManually from "./router/EnterManually";
 import UserQrCode from "./router/UserQrCode";
 import SelectCard from "./router/SelectCard";
+import Profile from "./router/MyProfile";
+import ParkingSettings from "./router/ParkingSettings";
+import RequestMoney from "./router/RequestMoney";
 
 const AppWrapper: React.FC = () => {
   const location = useLocation();
@@ -37,6 +40,11 @@ const AppWrapper: React.FC = () => {
         <Route path="/payment-options" element={<PaymentOptionScreen />} />
         <Route path="/user-qr" element={<UserQrCode />} />
         <Route path="/select-card" element={<SelectCard />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/parking-settings" element={<ParkingSettings />} />
+        <Route path="/request-money" element={<RequestMoney />} />
+
       </Routes>
 
       {!hideNavRoutes.includes(location.pathname) && <BottomNav />}

@@ -41,6 +41,22 @@ const FriendDetails: React.FC = () => {
         </div>
       </div>
 
+      {/* Action Buttons */}
+      <div className="mt-5 d-flex flex-column gap-3 w-100">
+        <button
+          className="btn btn-success w-100"
+          onClick={() => navigate("/request-money", { state: { friend: transaction.name } })}
+        >
+          Request Money
+        </button>
+        <button
+          className="btn btn-primary w-100"
+          onClick={() => navigate("/payment-options", { state: { title: `Send to ${transaction.name}` } })}
+        >
+          Send Money
+        </button>
+      </div>
+
       <button
         className="btn btn-outline-light mt-5"
         onClick={() => navigate(-1)}
