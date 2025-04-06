@@ -14,7 +14,7 @@
 .dashboard-content {
   overflow-y: auto;
   flex-grow: 1;
-  padding-bottom: 150px; /* space for bottom nav */
+  padding-bottom: 15px; /* space for bottom nav */
 }
 .filter-tab-btn {
   min-width: 80px;
@@ -23,4 +23,9 @@
   padding: 0.4rem 0.6rem;
   white-space: nowrap;
   height: 40px;
+  margin-bottom: 2rem;
+}
+.dashboard-scroll {
+  padding-top: 10rem; /* or 32px */
+  margin-top: 0.5rem;
 }

@@ -137,7 +137,7 @@ const Dashboard: React.FC = () => {
       {/* Filter Tabs */}
       <div
         className="px-3 py-2 d-flex gap-2 overflow-auto sticky-top"
-        style={{ top: "84px", zIndex: 10, backgroundColor: "#1D1D1B" }}
+        style={{ top: "84px", zIndex: 10, backgroundColor: "#1D1D1B", paddingBottom: 20 }}
       >
         {[
           { label: "All", key: "all" },
@@ -159,11 +159,23 @@ const Dashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Scrollable Dashboard */}
-      <div className="dashboard-scroll px-3 pt-3 flex-grow-1 overflow-auto">
-        {visibleSections()}
-        <div style={{ height: "100px" }} />
-      </div>
+{/* Scrollable Dashboard */}
+<div className="dashboard-scroll px-3 pt-3 flex-grow-1 overflow-auto">
+  <div className="card bg-dark text-white mb-3 p-3 border border-info">
+    <h5 className="text-info">🎫 My QR Code</h5>
+    <p>Show your QR code so others can pay you directly or add you as a friend.</p>
+    <button
+      className="btn btn-info"
+      onClick={() => navigate("/user-qr")}
+    >
+      Show QR Code
+    </button>
+  </div>
+
+  {visibleSections()}
+  <div style={{ height: "100px" }} />
+</div>
+
 
       {/* Logout modal */}
       <LogoutModal

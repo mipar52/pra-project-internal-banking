@@ -31,25 +31,48 @@ const TopUp: React.FC = () => {
       </div>
 
       {/* Amount Section */}
-      <div className="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
-        <h6 className="mb-3">Topping up:</h6>
-        <div className="d-flex align-items-center gap-4">
-          <button className="btn btn-outline-primary fs-3" onClick={decrease}>
-            −
-          </button>
-          <h1 className="display-3">{amount} €</h1>
-          <button className="btn btn-outline-primary fs-3" onClick={increase}>
-            +
-          </button>
-        </div>
-        <p className="mt-3">
-          Available: <strong>{balance.toFixed(2)} €</strong>
-        </p>
-      </div>
+{/* Amount Section */}
+<div className="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
+  <h6 className="mb-3">Topping up:</h6>
+  <div className="d-flex align-items-center gap-4">
+    <button className="btn btn-outline-primary fs-3" onClick={decrease}>
+      −
+    </button>
 
-      {/* Card Info + Slide Button */}
-      <div className="bg-dark p-3">
-        <div className="d-flex align-items-center justify-content-between bg-black text-white p-2 rounded mb-3">
+    {/* Editable input field for amount */}
+    <input
+      type="number"
+      className="form-control text-center fs-2"
+      value={amount}
+      onChange={(e) => {
+        const val = parseFloat(e.target.value);
+        setAmount(isNaN(val) ? 0 : val);
+      }}
+      style={{
+        width: "100px",
+        backgroundColor: "#000",
+        color: "#fff",
+        border: "1px solid #444",
+      }}
+    />
+
+    <button className="btn btn-outline-primary fs-3" onClick={increase}>
+      +
+    </button>
+  </div>
+  <p className="mt-3">
+    Available: <strong>{balance.toFixed(2)} €</strong>
+  </p>
+</div>
+
+
+      {/* Card Info + Button */}
+      <div className="bg-dark p-3" style={{marginBottom: "80px"}}>
+        <div
+          className="d-flex align-items-center justify-content-between bg-black text-white p-2 rounded mb-3"
+          role="button"
+          onClick={() => navigate("/select-card")}
+        >
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
             alt="Visa"
@@ -66,7 +89,7 @@ const TopUp: React.FC = () => {
           className="btn btn-info text-white w-100 py-3 rounded-pill fw-bold"
           onClick={handleTopUp}
         >
-          Swipe to Top Up →
+          Press to Top Up
         </button>
       </div>
     </div>

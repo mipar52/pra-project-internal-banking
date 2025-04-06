@@ -15,6 +15,8 @@ import History from "./router/History";
 import Settings from "./router/Settings";
 import PaymentOptionScreen from "./router/PaymentOptionScreen";
 import EnterManually from "./router/EnterManually";
+import UserQrCode from "./router/UserQrCode";
+import SelectCard from "./router/SelectCard";
 
 const AppWrapper: React.FC = () => {
   const location = useLocation();
@@ -33,6 +35,8 @@ const AppWrapper: React.FC = () => {
         <Route path="/settings" element={<Settings />} />
         <Route path="/enter-manually" element={<EnterManually />} />
         <Route path="/payment-options" element={<PaymentOptionScreen />} />
+        <Route path="/user-qr" element={<UserQrCode />} />
+        <Route path="/select-card" element={<SelectCard />} />
       </Routes>
 
       {!hideNavRoutes.includes(location.pathname) && <BottomNav />}
