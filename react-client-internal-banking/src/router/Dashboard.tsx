@@ -27,7 +27,7 @@ const Dashboard: React.FC = () => {
         <h5>💸 Friends</h5>
         <p>Send or receive money with classmates</p>
         <div className="d-flex gap-2">
-          <button className="btn btn-success flex-fill">Request</button>
+          <button className="btn btn-success flex-fill" onClick={() => navigate("/request-money")}>Request</button>
           <button
             className="btn btn-success flex-fill"
             onClick={() =>
@@ -50,9 +50,9 @@ const Dashboard: React.FC = () => {
       >
         <h5>🍽️ Food</h5>
         <div className="d-grid gap-2">
-          <button className="btn btn-light">Pay Cafeteria Food</button>
-          <button className="btn btn-dark">Pay Vending Machine</button>
-          <button className="btn btn-secondary">Pay Coffee Machine</button>
+          <button className="btn btn-light" onClick={() => navigate("/payment-options")}>Pay Cafeteria Food</button>
+          <button className="btn btn-dark" onClick={() => navigate("/payment-options")}>Pay Vending Machine</button>
+          <button className="btn btn-secondary" onClick={() => navigate("/payment-options")}>Pay Coffee Machine</button>
         </div>
       </div>
     ),
@@ -67,7 +67,7 @@ const Dashboard: React.FC = () => {
       >
         <h5>🅿️ Parking</h5>
         <p>Pay for parking at Algebra University</p>
-        <button className="btn btn-light">Pay Parking</button>
+        <button className="btn btn-light" onClick={() => navigate("/payment-options")}>Pay Parking</button>
       </div>
     ),
     scanpay: (
@@ -81,9 +81,9 @@ const Dashboard: React.FC = () => {
       >
         <h5>📱 Scan and Pay</h5>
         <div className="d-grid gap-2">
-          <button className="btn btn-info">Scan a Colleague's QR</button>
-          <button className="btn btn-secondary">Pay Someone's Coffee</button>
-          <button className="btn btn-danger">Pay Tuition</button>
+          <button className="btn btn-info" onClick={() => navigate("/qr")}>Scan a Colleague's QR</button>
+          <button className="btn btn-secondary" onClick={() => navigate("/payment-options")}>Pay Someone's Coffee</button>
+          <button className="btn btn-danger" onClick={() => navigate("/payment-options")}>Pay Tuition</button>
         </div>
       </div>
     ),
@@ -98,7 +98,7 @@ const Dashboard: React.FC = () => {
       >
         <h5>🎓 Tuition</h5>
         <p>Handle your tuition payments securely</p>
-        <button className="btn btn-light">Pay Tuition</button>
+        <button className="btn btn-light" onClick={() => navigate("/payment-options")}>Pay Tuition</button>
       </div>
     ),
   };
