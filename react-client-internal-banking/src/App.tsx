@@ -22,38 +22,51 @@ import ParkingSettings from "./router/ParkingSettings";
 import RequestMoney from "./router/RequestMoney";
 import AllFriends from "./router/AllFriends";
 import FriendDetails from "./router/FriendDetails";
+import useWindowSize from "./hooks/useWindowSize";
 
 const AppWrapper: React.FC = () => {
   const location = useLocation();
+  const { width } = useWindowSize();
+  const isDesktop = width >= 768;
   const hideNavRoutes = ["/"];
 
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/topup" element={<TopUp />} />
-        <Route path="/qr" element={<QrScanner />} />
-        <Route path="/transactions" element={<Transactions />} />
-        <Route path="/transaction-details" element={<TransactionDetails />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/enter-manually" element={<EnterManually />} />
-        <Route path="/payment-options" element={<PaymentOptionScreen />} />
-        <Route path="/user-qr" element={<UserQrCode />} />
-        <Route path="/select-card" element={<SelectCard />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/parking-settings" element={<ParkingSettings />} />
-        <Route path="/request-money" element={<RequestMoney />} />
-        <Route path="/all-friends" element={<AllFriends />} />
-        <Route path="/friend-details" element={<FriendDetails />} />
-      </Routes>
-
+    <div className={isDesktop ? "d-flex" : ""}>
+      {/* BottomNav (sidebar or mobile nav) */}
       {!hideNavRoutes.includes(location.pathname) && <BottomNav />}
-    </>
+
+      {/* This container shifts content when sidebar is shown on desktop */}
+      <div
+        style={{
+          width: "100%",
+          marginLeft: isDesktop ? "220px" : 0, // 🧠 Adjust for sidebar width
+          transition: "margin-left 0.3s ease",
+        }}
+      >
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/topup" element={<TopUp />} />
+          <Route path="/qr" element={<QrScanner />} />
+          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/transaction-details" element={<TransactionDetails />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/enter-manually" element={<EnterManually />} />
+          <Route path="/payment-options" element={<PaymentOptionScreen />} />
+          <Route path="/user-qr" element={<UserQrCode />} />
+          <Route path="/select-card" element={<SelectCard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/parking-settings" element={<ParkingSettings />} />
+          <Route path="/request-money" element={<RequestMoney />} />
+          <Route path="/all-friends" element={<AllFriends />} />
+          <Route path="/friend-details" element={<FriendDetails />} />
+        </Routes>
+      </div>
+    </div>
   );
 };
+
 
 const App: React.FC = () => {
   return (
