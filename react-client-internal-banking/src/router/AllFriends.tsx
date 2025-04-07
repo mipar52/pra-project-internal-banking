@@ -22,12 +22,12 @@ const dummyFriends: Friend[] = [
   },
   {
     id: 3,
-    username: "srecko.mokric",
+    username: "robert.robic",
     image: "https://i.pravatar.cc/150?img=3",
   },
   {
     id: 4,
-    username: "franjo.c",
+    username: "franjo.cicak",
     image: "https://i.pravatar.cc/150?img=4",
   },
 ];
