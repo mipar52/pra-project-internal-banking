@@ -9,8 +9,8 @@ import Dashboard from "./router/Dashboard";
 import TopUp from "./router/TopUp";
 import QrScanner from "./components/QrScanner";
 import BottomNav from "./components/BottomNav";
-import Friends from "./router/Friends";
-import FriendDetails from "./router/FriendDetails";
+import Transactions from "./router/Transactions";
+import TransactionDetails from "./router/TransactionDetails";
 import History from "./router/History";
 import Settings from "./router/Settings";
 import PaymentOptionScreen from "./router/PaymentOptionScreen";
@@ -20,6 +20,8 @@ import SelectCard from "./router/SelectCard";
 import Profile from "./router/MyProfile";
 import ParkingSettings from "./router/ParkingSettings";
 import RequestMoney from "./router/RequestMoney";
+import AllFriends from "./router/AllFriends";
+import FriendDetails from "./router/FriendDetails";
 
 const AppWrapper: React.FC = () => {
   const location = useLocation();
@@ -32,8 +34,8 @@ const AppWrapper: React.FC = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/topup" element={<TopUp />} />
         <Route path="/qr" element={<QrScanner />} />
-        <Route path="/friends" element={<Friends />} />
-        <Route path="/friend-details" element={<FriendDetails />} />
+        <Route path="/transactions" element={<Transactions />} />
+        <Route path="/transaction-details" element={<TransactionDetails />} />
         <Route path="/history" element={<History />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/enter-manually" element={<EnterManually />} />
@@ -44,7 +46,8 @@ const AppWrapper: React.FC = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/parking-settings" element={<ParkingSettings />} />
         <Route path="/request-money" element={<RequestMoney />} />
-
+        <Route path="/all-friends" element={<AllFriends />} />
+        <Route path="/friend-details" element={<FriendDetails />} />
       </Routes>
 
       {!hideNavRoutes.includes(location.pathname) && <BottomNav />}

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   FaUserFriends,
-  FaHome,
+  FaChartBar,
   FaHistory,
   FaCog,
   FaBars,
@@ -22,9 +22,13 @@ const BottomNav: React.FC = () => {
   const isDesktop = width >= 768;
 
   const tabs = [
-    { icon: <FaUserFriends />, route: "/friends", label: "Friends" },
-    { icon: <FaHome />, route: "/dashboard", label: "Dashboard" },
-    { icon: <FaHistory />, route: "/history", label: "History" },
+    { icon: <FaHistory />, route: "/history", label: "Transaction History" },
+    {
+      icon: <FaUserFriends />,
+      route: "/friends-overview",
+      label: "Friends Overview",
+    },
+    { icon: <FaChartBar />, route: "/charts", label: "Charts" },
     { icon: <FaCog />, route: "/settings", label: "Settings" },
   ];
 
@@ -50,38 +54,52 @@ const BottomNav: React.FC = () => {
   return (
     <>
       <div className="bottom-nav d-flex justify-content-around align-items-center p-2">
-        {tabs.slice(0, 2).map((tab) => (
-          <button
-            key={tab.route}
-            className={`nav-btn ${
-              location.pathname === tab.route ? "active" : ""
-            }`}
-            onClick={() => navigate(tab.route)}
-          >
-            {tab.icon}
-          </button>
-        ))}
+        {/* Left icons */}
+        <button
+          className={`nav-btn ${
+            location.pathname === "/transcations" ? "active" : ""
+          }`}
+          onClick={() => navigate("/transactions")}
+        >
+          <FaHistory />
+        </button>
 
-        {/* Logo = Logout trigger */}
+        <button
+          className={`nav-btn ${
+            location.pathname === "/all-friends" ? "active" : ""
+          }`}
+          onClick={() => navigate("/all-friends")}
+        >
+          <FaUserFriends />
+        </button>
+
+        {/* Center Logo: navigates to dashboard */}
         <div
           className="nav-logo"
-          onClick={() => setShowLogoutModal(true)}
+          onClick={() => navigate("/dashboard")}
           style={{ cursor: "pointer" }}
         >
           <img src={algebraLogo} alt="Algebra Logo" />
         </div>
 
-        {tabs.slice(2).map((tab) => (
-          <button
-            key={tab.route}
-            className={`nav-btn ${
-              location.pathname === tab.route ? "active" : ""
-            }`}
-            onClick={() => navigate(tab.route)}
-          >
-            {tab.icon}
-          </button>
-        ))}
+        {/* Right icons */}
+        <button
+          className={`nav-btn ${
+            location.pathname === "/history" ? "active" : ""
+          }`}
+          onClick={() => navigate("/history")}
+        >
+          <FaChartBar />
+        </button>
+
+        <button
+          className={`nav-btn ${
+            location.pathname === "/settings" ? "active" : ""
+          }`}
+          onClick={() => navigate("/settings")}
+        >
+          <FaCog />
+        </button>
       </div>
 
       {/* 🔐 Logout Modal on mobile too */}
