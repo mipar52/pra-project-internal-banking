@@ -2,6 +2,7 @@
 using PRA_1.DTOs;
 using PRA_1.Models;
 using PRA_1.Security;
+using PRA_1.Services;
 using System.Linq.Expressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,6 +13,7 @@ namespace PRA_1.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private static Verify2FADto userExtra = new Verify2FADto();
         private readonly PraDbContext _context;
         private readonly IConfiguration _configuration;
 
@@ -79,7 +81,7 @@ namespace PRA_1.Controllers
                 {
                     FirstName = UserDto.FirstName,
                     LastName = UserDto.LastName,
-                    Email = UserDto.FirstName.ToLower()[0] + "." + UserDto.LastName.ToLower() + "@algebra.hr",
+                    Email = UserDto.FirstName.ToLower()[0] + UserDto.LastName.ToLower() + "@algebra.hr",
                     Phone = UserDto.Phone,
                     UserPassword = b64hash,
                     TestPassword = b64salt,
@@ -148,7 +150,7 @@ namespace PRA_1.Controllers
             {
                 var loginFailMessage = "Incorrect username or password";
 
-                var existingUser = _context.Users.FirstOrDefault(u =>u.UserName == UserDto.UserName);
+                var existingUser = _context.Users.FirstOrDefault(u =>u.Email == UserDto.Email);
                 if(existingUser == null)
                 {
                     return BadRequest(loginFailMessage);
@@ -158,10 +160,48 @@ namespace PRA_1.Controllers
                 if(b64hash != existingUser.UserPassword)
                     return BadRequest(loginFailMessage);
 
-                var secureKey = _configuration["JWT:SecureKey"];
-                var SerializedToken = JwtTokenProvider.CreateToken(secureKey, 120, UserDto.UserName);
+                Console.WriteLine("Succesful Login");
 
-                return Ok(SerializedToken);
+                var secureKey = _configuration["JWT:SecureKey"];
+                var SerializedToken = JwtTokenProvider.CreateToken(secureKey, 120, UserDto.Email);
+
+                var code = _2FACodeProvider.GenerateCode();
+                var codeTimeExpiring = _2FACodeProvider.GenerateCodeTimeExpiring();
+
+                existingUser.Temp2Facode = code;
+                existingUser.Temp2FacodeExpires = codeTimeExpiring;
+
+                string tempEmail = "pra-projekt@outlook.com";
+
+                if(UserDto.CodeSenderOption == "email")
+                {
+                    EmailService.Send(tempEmail, code, codeTimeExpiring);
+                }
+                else if (UserDto.CodeSenderOption == "phone")
+                {
+                    SmsService.Send("+385955199757", code, codeTimeExpiring);
+                }
+                
+                userExtra.Email = existingUser.Email;
+                //userExtra.AuthCode = existingUser.Temp2Facode;
+                userExtra.AuthCodeTime = codeTimeExpiring;
+
+                _context.SaveChanges();
+
+                return Ok("2FA code has been sent to " + UserDto.Email);
+
+                //do
+                //{
+                //        if(code != UserDto.AuthCode && codeTimeExpiring < DateTime.UtcNow)
+                //    {
+                //        return BadRequest("Your code is either wrong or expired!");
+                //    }
+
+                //} while(DateTime.UtcNow < codeTimeExpiring);
+
+  
+                //return Ok(SerializedToken);
+                
             }
             catch (Exception ex)
             {
@@ -169,6 +209,39 @@ namespace PRA_1.Controllers
             }
             
         }
-        
+
+        [HttpPost("[action]")]
+        public ActionResult Verify2FA(Verify2FADto userDto)
+        {
+
+            var user = _context.Users.FirstOrDefault(u => u.Email == userExtra.Email);
+
+            if (user == null) return BadRequest("Invalid user.");
+
+            if (userDto.AuthCode != user.Temp2Facode || userExtra.AuthCodeTime < DateTime.UtcNow.ToLocalTime())
+            {
+                return BadRequest("Invalid or expired 2FA code.");
+
+                userExtra.Email = null;
+                user.Temp2Facode = null;
+                user.Temp2FacodeExpires = null;
+                user.Temp2Facode = null;
+                user.Temp2FacodeExpires = null;
+                _context.SaveChanges();
+            }
+
+            userExtra.Email = null;
+            user.Temp2Facode = null;
+            user.Temp2FacodeExpires = null;
+            user.Temp2Facode = null;
+            user.Temp2FacodeExpires = null;
+            _context.SaveChanges();
+
+            var secureKey = _configuration["JWT:SecureKey"];
+            var seralizedToken = JwtTokenProvider.CreateToken(secureKey, 120, userDto.Email);
+
+            return Ok(seralizedToken);
+        }
+
     }
 }

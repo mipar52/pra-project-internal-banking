@@ -123,5 +123,21 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.UserController",
+    "Method": "Verify2FA",
+    "RelativePath": "api/User/Verify2FA",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userDto",
+        "Type": "PRA_1.DTOs.Verify2FADto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

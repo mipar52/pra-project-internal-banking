@@ -218,6 +218,37 @@
           }
         }
       }
+    },
+    "/api/User/Verify2FA": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Verify2FADto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Verify2FADto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Verify2FADto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -255,6 +286,15 @@
           },
           "phone": {
             "type": "string",
+            "nullable": true
+          },
+          "temp2Facode": {
+            "type": "string",
+            "nullable": true
+          },
+          "temp2FacodeExpires": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           }
         },
@@ -312,16 +352,21 @@
       },
       "UserLoginDto": {
         "required": [
-          "userName",
+          "codeSenderOption",
+          "email",
           "userPassword"
         ],
         "type": "object",
         "properties": {
-          "userName": {
+          "email": {
             "minLength": 1,
             "type": "string"
           },
           "userPassword": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "codeSenderOption": {
             "minLength": 1,
             "type": "string"
           }
@@ -359,6 +404,28 @@
           "phone": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Verify2FADto": {
+        "required": [
+          "authCode",
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "authCode": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "authCodeTime": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
