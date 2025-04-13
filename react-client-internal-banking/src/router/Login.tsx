@@ -1,18 +1,32 @@
-// src/Login.tsx
 import React, { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import algebraLogo from "../assets/algebra-logo.png";
+import axios from "axios";
+import ErrorPopup from "../components/ErrorPopup";
+import SuccessPopup from "../components/SuccessPopup";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [twoFA, setTwoFA] = useState<string>("sms");
+  const [show2FA, setShow2FA] = useState(false);
+  const [twoFACode, setTwoFACode] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleLogin = (e: FormEvent) => {
+  /* 
+    const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+    const { data } = await axios.post("my-url", {
+      email,
+      password,
+      twoFactionAuthentification: twoFA
+    });
+    
     // Simulated login
     setTimeout(() => {
       setLoading(false);
@@ -20,6 +34,32 @@ const Login: React.FC = () => {
       navigate("/dashboard");
     }, 2000);
   };
+  
+  */
+
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+  
+    try {
+      // Simulated API request
+      await axios.post("https://your-api.com/api/login", {
+        email,
+        password,
+        twoFactorAuthentification: twoFA,
+      });
+  
+      // Simulate success & show 2FA modal
+      setLoading(false);
+      setShow2FA(true);
+    } catch (err) {
+      setError("err.message");
+      setLoading(false);
+      setError("Login failed. Please check your credentials.");
+    }
+  };
+  
+
 
   return (
     <div
@@ -53,6 +93,7 @@ const Login: React.FC = () => {
               disabled={loading}
             />
           </div>
+
           <div className="mb-3">
             <label htmlFor="password" className="form-label">
               Password
@@ -66,6 +107,41 @@ const Login: React.FC = () => {
               required
               disabled={loading}
             />
+          </div>
+
+          {/* ✅ Two-Factor Selection */}
+          <div className="mb-3 text-center">
+            <label className="form-label d-block">Choose a two-factor authentication (2FA) method: </label>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="twoFA"
+                id="sms"
+                value="sms"
+                checked={twoFA === "sms"}
+                onChange={(e) => setTwoFA(e.target.value)}
+                disabled={loading}
+              />
+              <label className="form-check-label" htmlFor="sms">
+                SMS
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="twoFA"
+                id="email"
+                value="email"
+                checked={twoFA === "email"}
+                onChange={(e) => setTwoFA(e.target.value)}
+                disabled={loading}
+              />
+              <label className="form-check-label" htmlFor="email">
+                Email
+              </label>
+            </div>
           </div>
           <button
             type="submit"
@@ -87,6 +163,54 @@ const Login: React.FC = () => {
           </button>
         </form>
       </div>
+      {error && <ErrorPopup message={error} onClose={() => setError(null)} />}
+
+      {show2FA && (
+  <div
+    className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex justify-content-center align-items-center"
+    style={{ zIndex: 1050 }}
+  >
+    <div className="card bg-black text-white p-4 shadow-lg" style={{ maxWidth: 360, width: "90%" }}>
+      <h5 className="text-center mb-3">Enter 2FA Code</h5>
+      <p className="text-muted text-center mb-4">
+        A 6-digit code has been sent via <strong>{twoFA.toUpperCase()}</strong>
+      </p>
+      <input
+        type="text"
+        maxLength={6}
+        className="form-control text-center fs-4 mb-3"
+        value={twoFACode}
+        onChange={(e) => setTwoFACode(e.target.value)}
+        placeholder="Enter 6-digit code"
+      />
+                {showSuccess && (
+  <SuccessPopup
+    message="Login successful! Welcome back 🎉"
+    onClose={() => {
+      setShowSuccess(false);
+      navigate("/dashboard");
+    }}
+  />
+)}
+      <button
+        className="btn btn-info w-100"
+        onClick={() => {
+          // Simulate verification
+          if (twoFACode === "123456") {
+            localStorage.setItem("isLoggedIn", "true");
+            setShowSuccess(true); // Show success popup first
+          //  navigate("/dashboard");
+          } else {
+            alert("Invalid 2FA code.");
+          }
+        }}
+      >
+        Verify
+      </button>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

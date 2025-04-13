@@ -34,12 +34,12 @@ const AppWrapper: React.FC = () => {
     <div className={isDesktop ? "d-flex" : ""}>
       {/* BottomNav (sidebar or mobile nav) */}
       {!hideNavRoutes.includes(location.pathname) && <BottomNav />}
-
+      
       {/* This container shifts content when sidebar is shown on desktop */}
       <div
         style={{
           width: "100%",
-          marginLeft: isDesktop ? "220px" : 0, // 🧠 Adjust for sidebar width
+          marginLeft: isDesktop && !hideNavRoutes.includes(location.pathname) ? "220px" : 0,
           transition: "margin-left 0.3s ease",
         }}
       >
