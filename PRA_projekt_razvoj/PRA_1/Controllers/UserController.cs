@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PRA_1.DTOs;
+using PRA_1.Extras;
 using PRA_1.Models;
 using PRA_1.Security;
 using PRA_1.Services;
+using System.Diagnostics.Metrics;
 using System.Linq.Expressions;
+using Twilio.Rest.Chat.V1;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,9 +30,7 @@ namespace PRA_1.Controllers
         public ActionResult GetToken()
         {
             try
-            {
-                // The same secure key must be used here to create JWT,
-                // as the one that is used by middleware to verify JWT
+            { 
                 var secureKey = _configuration["JWT:SecureKey"];
                 var serializedToken = JwtTokenProvider.CreateToken(secureKey, 10);
 
@@ -42,105 +43,148 @@ namespace PRA_1.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<User> GetUsers()
-        {
-            IEnumerable<User> users = _context.Users.ToList();
-
-            return users;
-        }
-
-        [HttpGet("[action]/{username}")]
-        public IActionResult GetUserById(string username)
-        {
-
-           User user = _context.Users.ToList().Find(u => u.UserName == username);
-
-            if(user == null)
-            {
-                return BadRequest("User with that username does not exist!");
-            }
-
-            return Ok(user);
-
-        }
-
-        [HttpPost("[action]")]
-        public ActionResult<UserCreateDto> CreateUser([FromBody] UserCreateDto UserDto)
+        public ActionResult GetUsers()
         {
             try
             {
-                string UsernameTest = UserDto.UserName.Trim();
+                IEnumerable<User> users = _context.Users.ToList();
 
-                if (_context.Users.Any(u => u.UserName.Equals(UsernameTest)))
-                    return BadRequest("Username already exists!");
-
-                var b64salt = PasswordHashProvider.GetSalt();
-                var b64hash = PasswordHashProvider.GetHash(UserDto.UserPassword, b64salt);
-
-                User user = new User()
-                {
-                    FirstName = UserDto.FirstName,
-                    LastName = UserDto.LastName,
-                    Email = UserDto.FirstName.ToLower()[0] + UserDto.LastName.ToLower() + "@algebra.hr",
-                    Phone = UserDto.Phone,
-                    UserPassword = b64hash,
-                    TestPassword = b64salt,
-                    UserName = UserDto.UserName,
-                };
-
-                _context.Users.Add(user);
-                _context.SaveChanges();
-
-                UserDto.IDUser = user.Iduser;
-
-                return Ok(UserDto);
+                return Ok(users);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-            
-            
-            
+        }
+
+        [HttpGet("[action]/{id}")]
+        public IActionResult GetUserById(int id)
+        {
+
+            try
+            {
+                User user = _context.Users.ToList().Find(x => x.Iduser == id);
+
+                if (user == null)
+                {
+                    return BadRequest("User with that username does not exist!");
+                }
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, ex.Message);
+            }
+
+        }
+
+        [HttpPost("[action]")]
+        public ActionResult CreateUser(UserCreateDto userCreateDto)
+        {
+            try
+            {
+                //string emailTest = userCreateDto.Email.Trim();
+
+                //if (_context.Users.Any(x => x.Email.Equals(emailTest)))
+                //{
+                //    return BadRequest($"User with an e-mail {userCreateDto.Email} already exists!");
+                //}
+
+                var b64salt = PasswordHashProvider.GetSalt();
+                var b64hash = PasswordHashProvider.GetHash(userCreateDto.UserPassword, b64salt);
+
+                //string usernameTest = userCreateDto.FirstName.ToLower()[0] + userCreateDto.LastName.ToLower();
+
+                userCreateDto.UserName = userCreateDto.FirstName.ToLower()[0] + userCreateDto.LastName.ToLower();
+                userCreateDto.Email = userCreateDto.FirstName.ToLower()[0] + userCreateDto.LastName.ToLower() + "@algebra.hr";
+
+                userCreateDto.UserName = RemoveDiacritics.RemoveDiacriticsMethod(userCreateDto.UserName);
+                userCreateDto.Email = RemoveDiacritics.RemoveDiacriticsMethod(userCreateDto.FirstName.ToLower()[0] + userCreateDto.LastName.ToLower() + "@algebra.hr");
+
+                if (_context.Users.Any(x => x.UserName.Equals(userCreateDto.UserName)))
+                {
+                    int counter = _context.Users.Count(x => x.UserName.Contains(userCreateDto.UserName));
+                    counter++;
+
+                    userCreateDto.UserName += counter;
+                    userCreateDto.Email = userCreateDto.FirstName.ToLower()[0] + userCreateDto.LastName.ToLower() + counter + "@algebra.hr";
+                }
+
+                User user = new User()
+                {
+                    FirstName = userCreateDto.FirstName,
+                    LastName = userCreateDto.LastName,
+                    Email = RemoveDiacritics.RemoveDiacriticsMethod(userCreateDto.Email),
+                    Phone = userCreateDto.Phone,
+                    UserPassword = b64hash,
+                    TestPassword = b64salt,
+                    UserName = RemoveDiacritics.RemoveDiacriticsMethod(userCreateDto.UserName)
+                };
+
+                _context.Users.Add(user);
+                _context.SaveChanges();
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }   
         }
 
         // POBRINUTI SE ZA EXCEPTIONE VEZANO ZA UNIQNESS PODATAKA
-        [HttpPut("[action]/{username})")]
-        public IActionResult UpdateUser(string username, [FromBody] UserUpdateDto UserDto)
+        [HttpPut("[action]")]
+        public IActionResult UpdateUser(UserUpdateDto userUpdateDto)
         {
-            User user = _context.Users.FirstOrDefault(u => u.UserName == username);
-
-            if(user == null)
+            try
             {
-                return BadRequest("User with that username does not exist!");
+                User user = _context.Users.FirstOrDefault(u => u.Email == userUpdateDto.Email);
+
+                if (user == null)
+                {
+                    return BadRequest("User with that username does not exist!");
+                }
+
+                if (userUpdateDto.FirstName != "string" && userUpdateDto.FirstName != null) user.FirstName = userUpdateDto.FirstName;
+                if (userUpdateDto.LastName != "string" && userUpdateDto.LastName != null) user.LastName = userUpdateDto.LastName;
+                if (userUpdateDto.Password != "string" && userUpdateDto.Password != null) user.UserPassword = userUpdateDto.Password;
+                if (userUpdateDto.Phone != "string" && userUpdateDto.Phone != null) user.Phone = userUpdateDto.Phone;
+
+                _context.Users.Update(user);
+                _context.SaveChanges();
+
+                return Ok("User has been updated!");
             }
-
-            if(UserDto.FirstName != "string" && UserDto.FirstName != null) user.FirstName = UserDto.FirstName;
-            if(UserDto.LastName != "string" && UserDto.LastName != null) user.LastName = UserDto.LastName;
-            if(UserDto.UserName != "string" && UserDto.UserName != null) user.UserName = UserDto.UserName;
-            if(UserDto.Password != "string" && UserDto.Password != null) user.UserPassword = UserDto.Password;
-            if(UserDto.Email != "user@example.com" && UserDto.Email != null) user.Email = UserDto.Email;
-            if(UserDto.Phone != "string" && UserDto.Phone != null) user.Phone = UserDto.Phone;
-
-            _context.SaveChanges();
-
-            return Ok("User has been updated!");
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpDelete("[action]/{username}")]
-        public IActionResult DeleteUser(string username)
+        [HttpDelete("[action]")]
+        public ActionResult DeleteUser(UserDeleteDto userDeleteDto)
         {
-            User user = _context.Users.FirstOrDefault(u => u.UserName == username);
-
-            if(user == null)
+            try
             {
-                return BadRequest("User with that username does not exist!");
+                User user = _context.Users.FirstOrDefault(u => u.UserName == userDeleteDto.Email || u.Iduser == userDeleteDto.Id);
+
+                if (user == null)
+                {
+                    return BadRequest("User with that username does not exist!");
+                }
+
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+
+                return Ok($"A user with an IDUser {user.Iduser} has been succesfully deleted.");
+
             }
-
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-
-            return Ok();
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            };
         }
 
         [HttpPost("[action]")]
@@ -172,6 +216,7 @@ namespace PRA_1.Controllers
                 existingUser.Temp2FacodeExpires = codeTimeExpiring;
 
                 string tempEmail = "pra-projekt@outlook.com";
+                string tempPhone = "+385955199757";
 
                 if(UserDto.CodeSenderOption == "email")
                 {
@@ -179,7 +224,9 @@ namespace PRA_1.Controllers
                 }
                 else if (UserDto.CodeSenderOption == "phone")
                 {
-                    SmsService.Send("+385955199757", code, codeTimeExpiring);
+                    //SmsService.Send(tempPhone, code, codeTimeExpiring);
+                    InfobipSmsService newSms = new InfobipSmsService();
+                    newSms.SendSms(tempPhone, code, codeTimeExpiring);
                 }
                 
                 userExtra.Email = existingUser.Email;
@@ -189,18 +236,6 @@ namespace PRA_1.Controllers
                 _context.SaveChanges();
 
                 return Ok("2FA code has been sent to " + UserDto.Email);
-
-                //do
-                //{
-                //        if(code != UserDto.AuthCode && codeTimeExpiring < DateTime.UtcNow)
-                //    {
-                //        return BadRequest("Your code is either wrong or expired!");
-                //    }
-
-                //} while(DateTime.UtcNow < codeTimeExpiring);
-
-  
-                //return Ok(SerializedToken);
                 
             }
             catch (Exception ex)

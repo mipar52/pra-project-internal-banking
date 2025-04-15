@@ -15,7 +15,7 @@ namespace PRA_1.DTOs
         public string LastName { get; set; } = null!;
 
         [Required(ErrorMessage = "Username is required")]
-        [StringLength(256, MinimumLength = 6, ErrorMessage = "Username needs to contain at least six charcaters.")]
+        [StringLength(256)]
         public string UserName { get; set; } = null!;
 
         [Required(ErrorMessage = "Password is required")]

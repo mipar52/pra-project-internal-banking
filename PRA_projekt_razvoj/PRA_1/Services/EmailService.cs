@@ -16,7 +16,7 @@ namespace PRA_1.Services
 
             message.Body = new TextPart("plain")
             {
-                Text = "Your Algebra authentication code " + code + " lasts for 5 minutes and expires at " + codeTimeExpiring.ToString() + "."           
+                Text = "Your Algebra authentication code " + code + " lasts for 5 minutes and expires on " + codeTimeExpiring.ToString() + "."           
             };
 
             using (var client = new SmtpClient())

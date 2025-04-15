@@ -24,4 +24,8 @@ public partial class User
     public string? Temp2Facode { get; set; }
 
     public DateTime? Temp2FacodeExpires { get; set; }
+
+    public virtual ICollection<UserCarRegistration> UserCarRegistrations { get; set; } = new List<UserCarRegistration>();
+
+    public virtual ICollection<UserCreditCard> UserCreditCards { get; set; } = new List<UserCreditCard>();
 }

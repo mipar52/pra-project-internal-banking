@@ -1,21 +1,142 @@
 [
   {
-    "ContainingType": "PRA_1.Controllers.UserController",
-    "Method": "CreateUser",
-    "RelativePath": "api/User/CreateUser",
+    "ContainingType": "PRA_1.Controllers.CarRegistrationController",
+    "Method": "CreateCarRegistration",
+    "RelativePath": "api/CarRegistration/CreateCarRegistration",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "UserDto",
-        "Type": "PRA_1.DTOs.UserCreateDto",
+        "Name": "carRegistrationDto",
+        "Type": "PRA_1.DTOs.CarRegistrationCreateDto",
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CarRegistrationController",
+    "Method": "DeleteCarRegistration",
+    "RelativePath": "api/CarRegistration/DeleteCarRegistration",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "carRegistrationDeleteDto",
+        "Type": "PRA_1.DTOs.CarRegistrationDeleteDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CarRegistrationController",
+    "Method": "GetCarRegistrations",
+    "RelativePath": "api/CarRegistration/GetCarRegistrations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CarRegistrationController",
+    "Method": "GetCarRegistrationsByEmail",
+    "RelativePath": "api/CarRegistration/GetCarRegistrationsByEmail/{email}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CarRegistrationController",
+    "Method": "GetCarRegistrationsById",
+    "RelativePath": "api/CarRegistration/GetCarRegistrationsById/{email}/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CarRegistrationController",
+    "Method": "UpdateCarRegistration",
+    "RelativePath": "api/CarRegistration/UpdateCarRegistration",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "carRegistrationUpdateDto",
+        "Type": "PRA_1.DTOs.CarRegistrationUpdateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CreditCardController",
+    "Method": "CreateCreditCard",
+    "RelativePath": "api/CreditCard/CreateCreditCard",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "creditcardDto",
+        "Type": "PRA_1.DTOs.CreditCardCreateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CreditCardController",
+    "Method": "DeleteCreditCard",
+    "RelativePath": "api/CreditCard/DeleteCreditCard",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "creditcardDto",
+        "Type": "PRA_1.DTOs.CreditCardDeleteDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CreditCardController",
+    "Method": "GetCreditCards",
+    "RelativePath": "api/CreditCard/GetCreditCards",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "PRA_1.DTOs.UserCreateDto",
+        "Type": "System.Collections.Generic.List\u00601[[PRA_1.Models.CreditCard, PRA_1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -26,16 +147,100 @@
     ]
   },
   {
-    "ContainingType": "PRA_1.Controllers.UserController",
-    "Method": "DeleteUser",
-    "RelativePath": "api/User/DeleteUser/{username}",
+    "ContainingType": "PRA_1.Controllers.CreditCardController",
+    "Method": "GetCreditCardsByEmail",
+    "RelativePath": "api/CreditCard/GetCreditCardsByEmail/{email}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[PRA_1.Models.CreditCard, PRA_1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CreditCardDatabaseController",
+    "Method": "CreateCreditCardForDatabase",
+    "RelativePath": "api/CreditCardDatabase/CreateCreditCardForDatabase",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "creditcardDto",
+        "Type": "PRA_1.Models.CreditCardDataBase",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CreditCardDatabaseController",
+    "Method": "DeleteCreditCardFromDatabase",
+    "RelativePath": "api/CreditCardDatabase/DeleteCreditCardFromDatabase",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "username",
-        "Type": "System.String",
+        "Name": "creditcardDto",
+        "Type": "PRA_1.DTOs.CreditCardDeleteDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.CreditCardDatabaseController",
+    "Method": "GetCreditCardsDB",
+    "RelativePath": "api/CreditCardDatabase/GetCreditCardsDB",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.UserController",
+    "Method": "CreateUser",
+    "RelativePath": "api/User/CreateUser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userCreateDto",
+        "Type": "PRA_1.DTOs.UserCreateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRA_1.Controllers.UserController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/User/DeleteUser",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userDeleteDto",
+        "Type": "PRA_1.DTOs.UserDeleteDto",
         "IsRequired": true
       }
     ],
@@ -54,14 +259,14 @@
   {
     "ContainingType": "PRA_1.Controllers.UserController",
     "Method": "GetUserById",
-    "RelativePath": "api/User/GetUserById/{username}",
+    "RelativePath": "api/User/GetUserById/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "username",
-        "Type": "System.String",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -75,17 +280,7 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[PRA_1.Models.User, PRA_1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "PRA_1.Controllers.UserController",
@@ -106,18 +301,13 @@
   {
     "ContainingType": "PRA_1.Controllers.UserController",
     "Method": "UpdateUser",
-    "RelativePath": "api/User/UpdateUser/{username})",
+    "RelativePath": "api/User/UpdateUser",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "username",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "UserDto",
+        "Name": "userUpdateDto",
         "Type": "PRA_1.DTOs.UserUpdateDto",
         "IsRequired": true
       }

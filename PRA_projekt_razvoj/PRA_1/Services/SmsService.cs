@@ -15,7 +15,7 @@ namespace PRA_1.Services
             TwilioClient.Init(accountSid, authToken);
 
             var message = MessageResource.Create(
-                body: "Your Algebra authentication code " + code + " lasts for 5 minutes and expires at " + codeTimeExpiring.ToString() + ".",
+                body: "Your Algebra authentication code " + code + " lasts for 5 minutes and expires on " + codeTimeExpiring.ToString() + ".",
                 from: new PhoneNumber("+14452754782"),
                 to: new PhoneNumber(toPhoneNumber)
             );
