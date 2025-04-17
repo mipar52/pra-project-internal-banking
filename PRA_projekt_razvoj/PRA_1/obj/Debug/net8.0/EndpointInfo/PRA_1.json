@@ -5,386 +5,6 @@
     "version": "v1"
   },
   "paths": {
-    "/api/CarRegistration/GetCarRegistrations": {
-      "get": {
-        "tags": [
-          "CarRegistration"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/CarRegistration/GetCarRegistrationsById/{email}/{id}": {
-      "get": {
-        "tags": [
-          "CarRegistration"
-        ],
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/CarRegistration/GetCarRegistrationsByEmail/{email}": {
-      "get": {
-        "tags": [
-          "CarRegistration"
-        ],
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/CarRegistration/CreateCarRegistration": {
-      "post": {
-        "tags": [
-          "CarRegistration"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CarRegistrationCreateDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CarRegistrationCreateDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CarRegistrationCreateDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/CarRegistration/UpdateCarRegistration": {
-      "put": {
-        "tags": [
-          "CarRegistration"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CarRegistrationUpdateDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CarRegistrationUpdateDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CarRegistrationUpdateDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/CarRegistration/DeleteCarRegistration": {
-      "delete": {
-        "tags": [
-          "CarRegistration"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CarRegistrationDeleteDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CarRegistrationDeleteDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CarRegistrationDeleteDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/CreditCard/GetCreditCards": {
-      "get": {
-        "tags": [
-          "CreditCard"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CreditCard"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CreditCard"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CreditCard"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/CreditCard/GetCreditCardsByEmail/{email}": {
-      "get": {
-        "tags": [
-          "CreditCard"
-        ],
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CreditCard"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CreditCard"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CreditCard"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/CreditCard/CreateCreditCard": {
-      "post": {
-        "tags": [
-          "CreditCard"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardCreateDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardCreateDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardCreateDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/CreditCard/DeleteCreditCard": {
-      "delete": {
-        "tags": [
-          "CreditCard"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardDeleteDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardDeleteDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardDeleteDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/CreditCardDatabase/GetCreditCardsDB": {
-      "get": {
-        "tags": [
-          "CreditCardDatabase"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/CreditCardDatabase/CreateCreditCardForDatabase": {
-      "post": {
-        "tags": [
-          "CreditCardDatabase"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardDataBase"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardDataBase"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardDataBase"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/CreditCardDatabase/DeleteCreditCardFromDatabase": {
-      "delete": {
-        "tags": [
-          "CreditCardDatabase"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardDeleteDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardDeleteDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreditCardDeleteDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
     "/api/User/GetToken": {
       "get": {
         "tags": [
@@ -404,24 +24,49 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/User/GetUserById/{id}": {
+    "/api/User/GetUserById/{username}": {
       "get": {
         "tags": [
           "User"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "username",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
@@ -458,15 +103,42 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCreateDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCreateDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCreateDto"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/User/UpdateUser": {
+    "/api/User/UpdateUser/{username})": {
       "put": {
         "tags": [
           "User"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -494,30 +166,21 @@
         }
       }
     },
-    "/api/User/DeleteUser": {
+    "/api/User/DeleteUser/{username}": {
       "delete": {
         "tags": [
           "User"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDeleteDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDeleteDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDeleteDto"
-              }
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Success"
@@ -590,257 +253,6 @@
   },
   "components": {
     "schemas": {
-      "CarRegistration": {
-        "type": "object",
-        "properties": {
-          "idcarRegistration": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "carBrand": {
-            "type": "string",
-            "nullable": true
-          },
-          "carModel": {
-            "type": "string",
-            "nullable": true
-          },
-          "registrationCountry": {
-            "type": "string",
-            "nullable": true
-          },
-          "registrationNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "userCarRegistrations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserCarRegistration"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CarRegistrationCreateDto": {
-        "required": [
-          "email",
-          "registrationCountry",
-          "registrationNumber"
-        ],
-        "type": "object",
-        "properties": {
-          "email": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "carBrand": {
-            "type": "string",
-            "nullable": true
-          },
-          "carModel": {
-            "type": "string",
-            "nullable": true
-          },
-          "registrationCountry": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "registrationNumber": {
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "CarRegistrationDeleteDto": {
-        "required": [
-          "email",
-          "idCarRegistration"
-        ],
-        "type": "object",
-        "properties": {
-          "email": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "idCarRegistration": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "CarRegistrationUpdateDto": {
-        "required": [
-          "email",
-          "idCarRegistration"
-        ],
-        "type": "object",
-        "properties": {
-          "email": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "idCarRegistration": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "carBrand": {
-            "type": "string",
-            "nullable": true
-          },
-          "carModel": {
-            "type": "string",
-            "nullable": true
-          },
-          "registrationCountry": {
-            "type": "string",
-            "nullable": true
-          },
-          "registrationNumber": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreditCard": {
-        "type": "object",
-        "properties": {
-          "idcreditCard": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "firstName": {
-            "type": "string",
-            "nullable": true
-          },
-          "lastName": {
-            "type": "string",
-            "nullable": true
-          },
-          "cardNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "expiryDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "cvvHash": {
-            "type": "string",
-            "nullable": true
-          },
-          "cvvSalt": {
-            "type": "string",
-            "nullable": true
-          },
-          "userCreditCards": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserCreditCard"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreditCardCreateDto": {
-        "required": [
-          "cardNumber",
-          "cvvHash",
-          "email",
-          "expiryDate",
-          "firstName",
-          "lastName"
-        ],
-        "type": "object",
-        "properties": {
-          "email": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "firstName": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "lastName": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "cardNumber": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "expiryDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "cvvHash": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "cvvSalt": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreditCardDataBase": {
-        "type": "object",
-        "properties": {
-          "idcreditCardDataBase": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "firstName": {
-            "type": "string",
-            "nullable": true
-          },
-          "lastName": {
-            "type": "string",
-            "nullable": true
-          },
-          "cardNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "expiryDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "cvvHash": {
-            "type": "string",
-            "nullable": true
-          },
-          "cvvSalt": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreditCardDeleteDto": {
-        "required": [
-          "email",
-          "idCreditCard"
-        ],
-        "type": "object",
-        "properties": {
-          "email": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "idCreditCard": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
       "User": {
         "type": "object",
         "properties": {
@@ -884,44 +296,6 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
-          },
-          "userCarRegistrations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserCarRegistration"
-            },
-            "nullable": true
-          },
-          "userCreditCards": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserCreditCard"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UserCarRegistration": {
-        "type": "object",
-        "properties": {
-          "iduserCarRegistration": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "userId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "carRegistrationId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "carRegistration": {
-            "$ref": "#/components/schemas/CarRegistration"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
           }
         },
         "additionalProperties": false
@@ -952,7 +326,7 @@
           },
           "userName": {
             "maxLength": 256,
-            "minLength": 0,
+            "minLength": 6,
             "type": "string"
           },
           "userPassword": {
@@ -970,44 +344,6 @@
             "format": "email"
           },
           "phone": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UserCreditCard": {
-        "type": "object",
-        "properties": {
-          "iduserCreditCard": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "userId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "creditCardId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "creditCard": {
-            "$ref": "#/components/schemas/CreditCard"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          }
-        },
-        "additionalProperties": false
-      },
-      "UserDeleteDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "email": {
             "type": "string",
             "nullable": true
           }
@@ -1038,15 +374,8 @@
         "additionalProperties": false
       },
       "UserUpdateDto": {
-        "required": [
-          "email"
-        ],
         "type": "object",
         "properties": {
-          "email": {
-            "minLength": 1,
-            "type": "string"
-          },
           "firstName": {
             "type": "string",
             "nullable": true
@@ -1055,10 +384,21 @@
             "type": "string",
             "nullable": true
           },
+          "userName": {
+            "maxLength": 256,
+            "minLength": 6,
+            "type": "string",
+            "nullable": true
+          },
           "password": {
             "maxLength": 256,
             "minLength": 6,
             "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
             "nullable": true
           },
           "phone": {

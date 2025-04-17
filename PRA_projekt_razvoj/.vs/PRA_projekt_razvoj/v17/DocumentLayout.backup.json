@@ -7,22 +7,6 @@
       "RelativeMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|solutionrelative:pra_1\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|c:\\users\\franj\\documents\\faks\\pra\\pra_projekt_razvoj\\pra_1\\extras\\removediacritics.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|solutionrelative:pra_1\\extras\\removediacritics.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|c:\\users\\franj\\documents\\faks\\pra\\pra_projekt_razvoj\\pra_1\\models\\pradbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|solutionrelative:pra_1\\models\\pradbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|c:\\users\\franj\\documents\\faks\\pra\\pra_projekt_razvoj\\pra_1\\security\\2facodeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|solutionrelative:pra_1\\security\\2facodeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|c:\\users\\franj\\documents\\faks\\pra\\pra_projekt_razvoj\\pra_1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|solutionrelative:pra_1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|c:\\users\\franj\\documents\\faks\\pra\\pra_projekt_razvoj\\pra_1\\services\\infobipsmsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|solutionrelative:pra_1\\services\\infobipsmsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -33,6 +17,18 @@
     {
       "AbsoluteMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|c:\\users\\franj\\documents\\faks\\pra\\pra_projekt_razvoj\\pra_1\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|solutionrelative:pra_1\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|c:\\users\\franj\\documents\\faks\\pra\\pra_projekt_razvoj\\pra_1\\models\\pradbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|solutionrelative:pra_1\\models\\pradbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|c:\\users\\franj\\documents\\faks\\pra\\pra_projekt_razvoj\\pra_1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|solutionrelative:pra_1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|c:\\users\\franj\\documents\\faks\\pra\\pra_projekt_razvoj\\pra_1\\security\\2facodeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|solutionrelative:pra_1\\security\\2facodeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{594843DC-8459-4475-B6E6-9219BBF3AE63}|PRA_1\\PRA_1.csproj|c:\\users\\franj\\documents\\faks\\pra\\pra_projekt_razvoj\\pra_1\\dtos\\verify2fadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -71,19 +67,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "RemoveDiacritics.cs",
-              "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Extras\\RemoveDiacritics.cs",
-              "RelativeDocumentMoniker": "PRA_1\\Extras\\RemoveDiacritics.cs",
-              "ToolTip": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Extras\\RemoveDiacritics.cs",
-              "RelativeToolTip": "PRA_1\\Extras\\RemoveDiacritics.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAA4AAAAAAAAAA==",
+              "Title": "InfobipSmsService.cs",
+              "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Services\\InfobipSmsService.cs",
+              "RelativeDocumentMoniker": "PRA_1\\Services\\InfobipSmsService.cs",
+              "ToolTip": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Services\\InfobipSmsService.cs",
+              "RelativeToolTip": "PRA_1\\Services\\InfobipSmsService.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAwB8AAACSAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-15T15:31:58.742Z",
+              "WhenOpened": "2025-04-12T09:35:50.33Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 3,
               "Title": "EmailService.cs",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Services\\EmailService.cs",
               "RelativeDocumentMoniker": "PRA_1\\Services\\EmailService.cs",
@@ -91,7 +87,8 @@
               "RelativeToolTip": "PRA_1\\Services\\EmailService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAABoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-11T16:15:49.305Z"
+              "WhenOpened": "2025-04-11T16:15:49.305Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -101,27 +98,27 @@
               "RelativeDocumentMoniker": "PRA_1\\Controllers\\UserController.cs",
               "ToolTip": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Controllers\\UserController.cs",
               "RelativeToolTip": "PRA_1\\Controllers\\UserController.cs",
-              "ViewState": "AgIAAEMAAAAAAAAAAAAYwGgAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAALIAAAAAAAAAAAAAAL8AAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-10T14:55:56.278Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "PraDbContext.cs",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Models\\PraDbContext.cs",
               "RelativeDocumentMoniker": "PRA_1\\Models\\PraDbContext.cs",
               "ToolTip": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Models\\PraDbContext.cs",
               "RelativeToolTip": "PRA_1\\Models\\PraDbContext.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAADwvx8AAAA5AAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-11T16:14:21.788Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 2,
               "Title": "SmsService.cs",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Services\\SmsService.cs",
               "RelativeDocumentMoniker": "PRA_1\\Services\\SmsService.cs",
@@ -129,11 +126,12 @@
               "RelativeToolTip": "PRA_1\\Services\\SmsService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-12T09:42:11.023Z"
+              "WhenOpened": "2025-04-12T09:42:11.023Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 9,
               "Title": "PasswordHashProvider.cs",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Security\\PasswordHashProvider.cs",
               "RelativeDocumentMoniker": "PRA_1\\Security\\PasswordHashProvider.cs",
@@ -145,7 +143,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 8,
               "Title": "JwtTokenProvider.cs",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Security\\JwtTokenProvider.cs",
               "RelativeDocumentMoniker": "PRA_1\\Security\\JwtTokenProvider.cs",
@@ -157,7 +155,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "Verify2FADto.cs",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\DTOs\\Verify2FADto.cs",
               "RelativeDocumentMoniker": "PRA_1\\DTOs\\Verify2FADto.cs",
@@ -169,7 +167,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\appsettings.json",
               "RelativeDocumentMoniker": "PRA_1\\appsettings.json",
@@ -177,12 +175,11 @@
               "RelativeToolTip": "PRA_1\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-04-11T16:14:08.347Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-11T16:14:08.347Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "2FACodeProvider.cs",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Security\\2FACodeProvider.cs",
               "RelativeDocumentMoniker": "PRA_1\\Security\\2FACodeProvider.cs",
@@ -190,24 +187,11 @@
               "RelativeToolTip": "PRA_1\\Security\\2FACodeProvider.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-11T18:02:48.889Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-11T18:02:48.889Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "InfobipSmsService.cs",
-              "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Services\\InfobipSmsService.cs",
-              "RelativeDocumentMoniker": "PRA_1\\Services\\InfobipSmsService.cs",
-              "ToolTip": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Services\\InfobipSmsService.cs",
-              "RelativeToolTip": "PRA_1\\Services\\InfobipSmsService.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAAwB8AAACSAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-12T09:35:50.33Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 10,
               "Title": "UserLoginDto.cs",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\DTOs\\UserLoginDto.cs",
               "RelativeDocumentMoniker": "PRA_1\\DTOs\\UserLoginDto.cs",
@@ -219,7 +203,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 12,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\Models\\User.cs",
               "RelativeDocumentMoniker": "PRA_1\\Models\\User.cs",
@@ -231,7 +215,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 11,
               "Title": "UserUpdateDto.cs",
               "DocumentMoniker": "C:\\Users\\franj\\Documents\\Faks\\PRA\\PRA_projekt_razvoj\\PRA_1\\DTOs\\UserUpdateDto.cs",
               "RelativeDocumentMoniker": "PRA_1\\DTOs\\UserUpdateDto.cs",

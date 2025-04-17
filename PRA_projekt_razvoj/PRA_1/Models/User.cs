@@ -25,6 +25,14 @@ public partial class User
 
     public DateTime? Temp2FacodeExpires { get; set; }
 
+    public virtual ICollection<BillingAccount> BillingAccounts { get; set; } = new List<BillingAccount>();
+
+    public virtual ICollection<CanteenPayment> CanteenPayments { get; set; } = new List<CanteenPayment>();
+
+    public virtual ICollection<ParkingPayment> ParkingPayments { get; set; } = new List<ParkingPayment>();
+
+    public virtual ICollection<ScholarshipPayment> ScholarshipPayments { get; set; } = new List<ScholarshipPayment>();
+
     public virtual ICollection<UserCarRegistration> UserCarRegistrations { get; set; } = new List<UserCarRegistration>();
 
     public virtual ICollection<UserCreditCard> UserCreditCards { get; set; } = new List<UserCreditCard>();

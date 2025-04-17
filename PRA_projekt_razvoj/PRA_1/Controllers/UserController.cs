@@ -91,7 +91,7 @@ namespace PRA_1.Controllers
                 //{
                 //    return BadRequest($"User with an e-mail {userCreateDto.Email} already exists!");
                 //}
-
+                
                 var b64salt = PasswordHashProvider.GetSalt();
                 var b64hash = PasswordHashProvider.GetHash(userCreateDto.UserPassword, b64salt);
 
@@ -99,9 +99,6 @@ namespace PRA_1.Controllers
 
                 userCreateDto.UserName = userCreateDto.FirstName.ToLower()[0] + userCreateDto.LastName.ToLower();
                 userCreateDto.Email = userCreateDto.FirstName.ToLower()[0] + userCreateDto.LastName.ToLower() + "@algebra.hr";
-
-                userCreateDto.UserName = RemoveDiacritics.RemoveDiacriticsMethod(userCreateDto.UserName);
-                userCreateDto.Email = RemoveDiacritics.RemoveDiacriticsMethod(userCreateDto.FirstName.ToLower()[0] + userCreateDto.LastName.ToLower() + "@algebra.hr");
 
                 if (_context.Users.Any(x => x.UserName.Equals(userCreateDto.UserName)))
                 {
