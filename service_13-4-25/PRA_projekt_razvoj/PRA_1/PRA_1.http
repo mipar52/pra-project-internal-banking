@@ -1,6 +1,0 @@
-@PRA_1_HostAddress = http://localhost:5081
-
-GET {{PRA_1_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
