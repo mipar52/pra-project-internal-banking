@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen();
 //});
 
 builder.Services.AddDbContext<PraDbContext>(options => {
-    options.UseSqlServer("Name=ConnectionStrings:ConnStringPRA");
+    options.UseSqlServer(builder.Configuration["ConnectionStrings:ConnStringPRA"]);
 });
 
 var secureKey = builder.Configuration["JWT:SecureKey"];
