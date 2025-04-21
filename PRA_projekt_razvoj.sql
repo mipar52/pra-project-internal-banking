@@ -166,8 +166,8 @@ insert into userrole values (8, 1)
 
 select * from userrole
 
-insert into StudyProgram values ('Programsko inï¿½enjerstvo', 'Prijediplomski studij', 'Sveuï¿½iliï¿½te Algebra Bernays', 5000)
-insert into StudyProgram values ('Sistemsko inï¿½enjerstvo', 'Prijediplomski studij', 'Sveuï¿½iliï¿½te Algebra Bernays', 5000)
+insert into StudyProgram values ('Programsko inženjerstvo', 'Prijediplomski studij', 'Sveuèilište Algebra Bernays', 5000)
+insert into StudyProgram values ('Sistemsko inženjerstvo', 'Prijediplomski studij', 'Sveuèilište Algebra Bernays', 5000)
 
 select * from StudyProgram
 
