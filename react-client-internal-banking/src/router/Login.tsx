@@ -40,26 +40,27 @@ const Login: React.FC = () => {
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-  
+
     try {
       // Simulated API request
-      await axios.post("https://your-api.com/api/login", {
-        email,
-        password,
-        twoFactorAuthentification: twoFA,
-      });
-  
+      const response = await axios.post(
+        "http://localhost:5026/api/User/LoginUser",
+        {
+          email: email,
+          userPassword: password,
+          codeSenderOption: twoFA,
+        }
+      );
+      console.log(`Response: `, response);
       // Simulate success & show 2FA modal
       setLoading(false);
       setShow2FA(true);
     } catch (err) {
-      setError("err.message");
+      console.log(err);
       setLoading(false);
       setError("Login failed. Please check your credentials.");
     }
   };
-  
-
 
   return (
     <div
@@ -111,7 +112,9 @@ const Login: React.FC = () => {
 
           {/* ✅ Two-Factor Selection */}
           <div className="mb-3 text-center">
-            <label className="form-label d-block">Choose a two-factor authentication (2FA) method: </label>
+            <label className="form-label d-block">
+              Choose a two-factor authentication (2FA) method:{" "}
+            </label>
             <div className="form-check form-check-inline">
               <input
                 className="form-check-input"
@@ -163,54 +166,84 @@ const Login: React.FC = () => {
           </button>
         </form>
       </div>
-      {error && <ErrorPopup message={error} onClose={() => setError(null)} />}
 
       {show2FA && (
-  <div
-    className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex justify-content-center align-items-center"
-    style={{ zIndex: 1050 }}
-  >
-    <div className="card bg-black text-white p-4 shadow-lg" style={{ maxWidth: 360, width: "90%" }}>
-      <h5 className="text-center mb-3">Enter 2FA Code</h5>
-      <p className="text-muted text-center mb-4">
-        A 6-digit code has been sent via <strong>{twoFA.toUpperCase()}</strong>
-      </p>
-      <input
-        type="text"
-        maxLength={6}
-        className="form-control text-center fs-4 mb-3"
-        value={twoFACode}
-        onChange={(e) => setTwoFACode(e.target.value)}
-        placeholder="Enter 6-digit code"
-      />
-                {showSuccess && (
-  <SuccessPopup
-    message="Login successful! Welcome back 🎉"
-    onClose={() => {
-      setShowSuccess(false);
-      navigate("/dashboard");
-    }}
-  />
-)}
-      <button
-        className="btn btn-info w-100"
-        onClick={() => {
-          // Simulate verification
-          if (twoFACode === "123456") {
-            localStorage.setItem("isLoggedIn", "true");
-            setShowSuccess(true); // Show success popup first
-          //  navigate("/dashboard");
-          } else {
-            alert("Invalid 2FA code.");
-          }
-        }}
-      >
-        Verify
-      </button>
-    </div>
-  </div>
-)}
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex justify-content-center align-items-center"
+          style={{ zIndex: 1050 }}
+        >
+          <div
+            className="card bg-black text-white p-4 shadow-lg"
+            style={{ maxWidth: 360, width: "90%" }}
+          >
+            <h5 className="text-center mb-3">Enter 2FA Code</h5>
+            <p className="text-muted text-center mb-4">
+              A 6-digit code has been sent via{" "}
+              <strong>{twoFA.toUpperCase()}</strong>
+            </p>
+            <input
+              type="text"
+              maxLength={6}
+              className="form-control text-center fs-4 mb-3"
+              value={twoFACode}
+              onChange={(e) => setTwoFACode(e.target.value)}
+              placeholder="Enter 6-digit code"
+            />
+            {error && (
+              <ErrorPopup message={error} onClose={() => setError(null)} />
+            )}
 
+            {showSuccess && (
+              <SuccessPopup
+                message="Login successful! Welcome back 🎉"
+                onClose={() => {
+                  setShowSuccess(false);
+                  navigate("/dashboard");
+                }}
+              />
+            )}
+            <button
+              type="button"
+              className="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+              aria-label="Close"
+              onClick={() => setShow2FA(false)}
+            ></button>
+            <button
+              className="btn btn-info w-100"
+              onClick={async () => {
+                try {
+                  const now = new Date().toISOString();
+                  const response = await axios.post(
+                    "http://localhost:5026/api/User/Verify2FA",
+                    {
+                      email: email,
+                      authCode: twoFACode,
+                      authCodeTime: now,
+                    }
+                  );
+                  console.log(`Got the response: ${response.data}`);
+                  const token = response.data;
+
+                  if (token) {
+                    localStorage.setItem("isLoggedIn", "true");
+                    localStorage.setItem("jwtToken", token);
+                    localStorage.setItem("userEmail", email);
+                    setShowSuccess(true);
+                  } else {
+                    setError("No token received.");
+                    alert();
+                  }
+                } catch (error) {
+                  console.error("2FA verification failed:", error);
+                  setError(`2FA verification failed: ${error}`);
+                }
+              }}
+            >
+              Verify
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
