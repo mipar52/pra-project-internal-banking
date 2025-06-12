@@ -39,8 +39,6 @@ const QrScanner: React.FC = () => {
       return;
     }
 
-    //isTransitioningRef.current = true;
-
     try {
       await scanner.start(
         devices[0].id,
@@ -58,6 +56,32 @@ const QrScanner: React.FC = () => {
           if (!scanned && isMounted && !isTransitioningRef.current) {
             setScanned(decodedText);
             isTransitioningRef.current = true;
+
+            // Re-route to enter-manually screen
+            // Example QR: 
+            // AlgebraQR{"recipientName":"Algebra", "iban":"HR1234567890", "amount":"123.45", "model":"HR01", "referenceNumber":"2024-12345", "description":"Tuition"}
+            if (decodedText.includes("AlgebraQR")) {
+              try {
+                const data = JSON.parse(decodedText.replace("AlgebraQR", ""));
+                navigate("/enter-manually", { state: data });
+
+                /**
+                 * navigate("/enter-manually", {
+  state: {
+    recipientName: "Algebra",
+    iban: "HR1234567890",
+    amount: "123.45",
+    model: "HR01",
+    referenceNumber: "2024-12345",
+    description: "Tuition"
+  }
+});
+                 */
+              } catch (err) {
+                setError("Invalid QR format.");
+              }
+            }
+
             if (!scanner.isScanning) {
               scanner
                 .stop()
@@ -89,8 +113,10 @@ const QrScanner: React.FC = () => {
   };
 
   useEffect(() => {
+    startScanner();
     return () => {
-      startScanner();
+      isMounted = false;
+      scannerRef.current?.stop().catch(() => {});
     };
   }, []);
 
@@ -104,7 +130,6 @@ const QrScanner: React.FC = () => {
         overflow: "hidden",
       }}
     >
-      {/* Top Blue Bar */}
       <div
         className="position-absolute top-0 start-0 end-0 py-3 px-4 text-white"
         style={{ backgroundColor: "#00AEEF", zIndex: 10 }}
@@ -112,7 +137,6 @@ const QrScanner: React.FC = () => {
         <h5 className="mb-0 text-center">Skeniraj i plati</h5>
       </div>
 
-      {/* Close Button */}
       <button
         onClick={() => navigate("/dashboard")}
         className="btn btn-link position-absolute top-0 start-0 text-white fs-3"
@@ -121,18 +145,16 @@ const QrScanner: React.FC = () => {
         ✕
       </button>
 
-      {/* Scanner View */}
       <div
         id={qrRegionId}
         style={{
           width: "100%",
           height: "100%",
-          marginTop: "3.5rem", // this shifts it down below the blue header
+          marginTop: "3.5rem",
           position: "relative",
         }}
       />
 
-      {/* Scan Result */}
       {scanned && (
         <div
           className="alert alert-success position-absolute bottom-0 start-0 end-0 m-3 text-center"
@@ -149,7 +171,6 @@ const QrScanner: React.FC = () => {
         </div>
       )}
 
-      {/* Error Fallback */}
       {error && (
         <div
           className="alert alert-danger position-absolute bottom-0 start-0 end-0 m-3 text-center"
