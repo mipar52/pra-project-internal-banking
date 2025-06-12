@@ -1,38 +1,78 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 import algebraLogo from "../assets/algebra-logo.png";
+import SuccessPopup from "../components/SuccessPopup";
+import ErrorPopup from "../components/ErrorPopup";
+import LoadingBar from "../components/LoadingBar";
 import "../css/EnterManully.css";
 
 const categories = [
-  { label: "Food", emoji: "🍽️" },
-  { label: "Drinks", emoji: "🥤" },
-  { label: "Parking", emoji: "🅿️" },
-  { label: "Bills", emoji: "📄" },
-  { label: "Tuition", emoji: "🎓" },
-  { label: "Other", emoji: "❓" },
+  { label: "Food", emoji: "🍔", id: 1 },
+  { label: "Parking", emoji: "🅿️", id: 2 },
+  { label: "Money transfer", emoji: "📄", id: 4 },
+  { label: "Tuition", emoji: "🎓", id: 3 },
 ];
 
 const EnterManually: React.FC = () => {
-  const [formData, setFormData] = useState({
-    recipientName: "",
-    iban: "",
-    amount: "",
-    currency: "EUR",
-    model: "",
-    referenceNumber: "",
-    description: "",
-  });
+  const [amount, setAmount] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const location = useLocation();
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [showLoading, setShowLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleCategorySelect = (id: number) => {
+    setSelectedCategory(id);
   };
 
-  const handleSubmit = () => {
-    console.log("Payment submitted:", formData);
-  };
+  const handleSubmit = async () => {
+    setShowLoading(true);
+    const userEmail = localStorage.getItem("userEmail");
 
-  const handleCategorySelect = (label: string) => {
-    setFormData((prev) => ({ ...prev, description: label }));
+    if (!userEmail || !amount || selectedCategory === null) {
+      setErrorMessage("Please fill all fields.");
+      //alert("Please fill all fields.");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 4000);
+      return;
+    }
+
+    const payload = {
+      userId: 0, // server may ignore this
+      userEmail: userEmail,
+      transactionTypeId: selectedCategory,
+      amount: parseFloat(amount),
+      date: new Date().toISOString(),
+    };
+
+    try {
+      await axios.post(
+        "http://localhost:5026/api/Transaction/TransactionCreateByMail",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        }
+      );
+      setTimeout(() => setShowSuccess(true), 4000); // Auto-dismiss
+    } catch (err: any) {
+      console.error("Error submitting payment:", err);
+
+      const message =
+        err.response?.data?.message || // backend error message
+        err.response?.data || // fallback to raw response
+        err.message || // Axios-level message
+        "Something went wrong with the payment.";
+
+      setErrorMessage(message);
+      setShowError(true);
+      setTimeout(() => setShowError(false), 4000);
+    } finally {
+      setTimeout(() => setShowLoading(false), 4000);
+    }
   };
 
   return (
@@ -44,90 +84,51 @@ const EnterManually: React.FC = () => {
 
       {/* Form Fields */}
       <div className="enter-manually-form overflow-auto px-3">
-        <div className="mb-3">
-          <label className="form-label">Recipient Name</label>
+        <div className="mb-4">
+          <label className="form-label">Amount (€)</label>
           <input
             className="form-control"
-            name="recipientName"
-            value={formData.recipientName}
-            onChange={handleChange}
-            placeholder="Sveučilište Algebra"
+            type="number"
+            step="0.01"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Enter amount"
           />
         </div>
+        {/* Payment Category */}
         <div className="mb-3">
-          <label className="form-label">IBAN</label>
-          <input
-            className="form-control"
-            name="iban"
-            value={formData.iban}
-            onChange={handleChange}
-            placeholder="HR7023600001102894251"
-          />
-        </div>
-        <div className="row">
-          <div className="col-6 mb-3">
-            <label className="form-label">Amount</label>
-            <input
-              className="form-control"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              placeholder="385.62"
-            />
-          </div>
-          <div className="col-6 mb-3">
-            <label className="form-label">Currency</label>
-            <input
-              className="form-control"
-              name="currency"
-              value={formData.currency}
-              readOnly
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-6 mb-3">
-            <label className="form-label">Model</label>
-            <input
-              className="form-control"
-              name="model"
-              value={formData.model}
-              onChange={handleChange}
-              placeholder="HR01"
-            />
-          </div>
-          <div className="col-6 mb-3">
-            <label className="form-label">Reference Number</label>
-            <input
-              className="form-control"
-              name="referenceNumber"
-              value={formData.referenceNumber}
-              onChange={handleChange}
-              placeholder="102024-26292-8"
-            />
-          </div>
-        </div>
-
-        {/* Payment Description Buttons */}
-        <div className="mb-3">
-          <label className="form-label">Payment Description</label>
+          <label className="form-label">Payment Category</label>
           <div className="d-grid gap-2">
             {categories.map((cat) => (
               <button
-                key={cat.label}
+                key={cat.id}
                 className={`btn btn-outline-light text-start ${
-                  formData.description === cat.label ? "active bg-info" : ""
+                  selectedCategory === cat.id ? "active bg-info" : ""
                 }`}
-                onClick={() => handleCategorySelect(cat.label)}
+                onClick={() => handleCategorySelect(cat.id)}
               >
                 {cat.emoji} {cat.label}
               </button>
             ))}
           </div>
         </div>
-
         <div style={{ height: "100px" }} /> {/* Safe space for nav */}
       </div>
+      {showSuccess && (
+        <SuccessPopup
+          message="Payment submitted successfully!"
+          onClose={() => setShowSuccess(false)}
+        />
+      )}
+      {showError && (
+        <ErrorPopup
+          message={errorMessage}
+          onClose={() => setShowError(false)}
+        />
+      )}
+      {showLoading && (
+        <LoadingBar message="Processing your payment... Hang tight!" />
+      )}
 
       {/* Pay Button */}
       <div className="enter-manually-button-container">
