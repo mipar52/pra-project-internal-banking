@@ -1,124 +1,96 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import algebraLogo from "../assets/algebra-logo.png";
 import "../css/Friends.css";
 
-const dummyData = [
-  {
-    name: "Franjo Cicak",
-    message: "Ja šaljem 12 €",
-    amount: "12 €",
-    time: "10:20",
-    label: "Ručak",
-    color: "#A066FF",
-    initials: "FC",
-  },
-  {
-    name: "Domagoj Antic",
-    message: "Domagoj ti šalje 3,50 €",
-    amount: "3,50 €",
-    time: "09:00",
-    label: "Kava",
-    color: "#FF784A",
-    initials: "DA",
-  },
-  {
-    name: "Milica Krmpotic",
-    message: "Ja šaljem 50 €",
-    amount: "50 €",
-    time: "Jučer",
-    label: "Poklon",
-    color: "#4AC6FF",
-    initials: "MK",
-  },
-  {
-    name: "Srecko Mokric",
-    message: "Srećko ti šalje 1 €",
-    amount: "1 €",
-    time: "05.12.",
-    label: "Pizza",
-    color: "#47D764",
-    initials: "SM",
-  },
-  {
-    name: "Srecko Mokric",
-    message: "Srećko ti šalje 1 €",
-    amount: "1 €",
-    time: "05.12.",
-    label: "Pizza",
-    color: "#47D764",
-    initials: "SM",
-  },
-  {
-    name: "Srecko Mokric",
-    message: "Srećko ti šalje 1 €",
-    amount: "1 €",
-    time: "05.12.",
-    label: "Pizza",
-    color: "#47D764",
-    initials: "SM",
-  },
-  {
-    name: "Srecko Mokric",
-    message: "Srećko ti šalje 1 €",
-    amount: "1 €",
-    time: "05.12.",
-    label: "Pizza",
-    color: "#47D764",
-    initials: "SM",
-  },
-  {
-    name: "Srecko Mokric",
-    message: "Srećko ti šalje 1 €",
-    amount: "1 €",
-    time: "05.12.",
-    label: "Pizza",
-    color: "#47D764",
-    initials: "SM",
-  },
-  {
-    name: "Srecko Mokric",
-    message: "Srećko ti šalje 1 €",
-    amount: "1 €",
-    time: "05.12.",
-    label: "Pizza",
-    color: "#47D764",
-    initials: "SM",
-  },
-  {
-    name: "Srecko Mokric",
-    message: "Srećko ti šalje 1 €",
-    amount: "1 €",
-    time: "05.12.",
-    label: "Pizza",
-    color: "#47D764",
-    initials: "SM",
-  },
-  {
-    name: "Srecko Mokric",
-    message: "Srećko ti šalje 1 €",
-    amount: "1 €",
-    time: "05.12.",
-    label: "Pizza",
-    color: "#47D764",
-    initials: "SM",
-  },
-];
+interface Transaction {
+  typeName: string;
+  amount: number;
+  date: string;
+  transactionTypeId: number;
+}
 
 const Transactions: React.FC = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const filteredData = dummyData.filter((item) => {
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const email = localStorage.getItem("userEmail");
+      const token = localStorage.getItem("jwtToken");
+
+      if (!email || !token) return;
+
+      try {
+        const response = await axios.get(
+          `http://localhost:5026/api/Transaction/GetTransactionsByEmail/${encodeURIComponent(
+            email
+          )}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setTransactions(response.data);
+      } catch (err) {
+        console.error("Failed to load transactions", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
+
+  const filteredData = transactions.filter((item) => {
     const lower = searchTerm.toLowerCase();
-    return (
-      item.name.toLowerCase().includes(lower) ||
-      item.label.toLowerCase().includes(lower)
-    );
+    return item.typeName.toLowerCase().includes(lower);
   });
 
-  // Handle "/" key to focus the search bar
+  const formatDate = (isoDate: string): string => {
+    const date = new Date(isoDate);
+    const today = new Date();
+
+    const isToday =
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear();
+
+    if (isToday) {
+      return date.toLocaleTimeString("hr-HR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    return date.toLocaleDateString("hr-HR", {
+      day: "2-digit",
+      month: "2-digit",
+    });
+  };
+
+  const getInitials = (label: string) => {
+    return label
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase();
+  };
+
+  const getColor = (label: string) => {
+    const colors = ["#A066FF", "#FF784A", "#4AC6FF", "#47D764", "#FFCC00"];
+    let hash = 0;
+    for (let i = 0; i < label.length; i++) {
+      hash = label.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  };
+
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "/" && inputRef.current) {
@@ -145,7 +117,7 @@ const Transactions: React.FC = () => {
             ref={inputRef}
             type="text"
             className="form-control bg-dark text-white border-secondary pe-5"
-            placeholder="Search by name or reason..."
+            placeholder="Search by type..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -160,10 +132,12 @@ const Transactions: React.FC = () => {
         </div>
       </div>
 
-      {/* Scrollable friend list */}
+      {/* Transactions list */}
       <div className="friend-list-scroll flex-grow-1 overflow-auto">
-        {filteredData.length === 0 ? (
-          <div className="text-center opacity-50 pt-4">No results found.</div>
+        {loading ? (
+          <div className="text-center text-muted pt-4">Loading...</div>
+        ) : filteredData.length === 0 ? (
+          <div className="text-center text-muted pt-4">No results found.</div>
         ) : (
           filteredData.map((item, idx) => (
             <div
@@ -175,26 +149,29 @@ const Transactions: React.FC = () => {
               <div className="d-flex align-items-center gap-3">
                 <div
                   className="avatar d-flex align-items-center justify-content-center"
-                  style={{ backgroundColor: item.color }}
+                  style={{
+                    backgroundColor: getColor(item.typeName),
+                  }}
                 >
-                  {item.initials}
+                  {getInitials(item.typeName)}
                 </div>
                 <div>
-                  <div className="fw-bold">{item.name}</div>
+                  <div className="fw-bold">{item.typeName}</div>
                   <div className="small text-warning fw-semibold">
-                    {item.label}
+                    {item.transactionTypeId === 0 ? "Outgoing" : "Incoming"}
                   </div>
                 </div>
               </div>
               <div className="text-end">
-                <div className="fw-bold text-success fs-5">{item.amount}</div>
+                <div className="fw-bold text-success fs-5">{item.amount} €</div>
                 <div className="small text-secondary opacity-75">
-                  {item.time}
+                  {formatDate(item.date)}
                 </div>
               </div>
             </div>
           ))
         )}
+        <div style={{ height: "100px" }} />
       </div>
     </div>
   );
