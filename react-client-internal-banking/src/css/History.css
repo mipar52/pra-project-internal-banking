@@ -1,0 +1,10 @@
+.history-wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .history-content {
+    flex-grow: 1;
+  }
+  
