@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import algebraLogo from "../assets/algebra-logo.png";
 import { useNavigate } from "react-router-dom";
 import LogoutModal from "../components/LogoutModal";
@@ -12,7 +12,13 @@ const settings = [
 
 const Settings: React.FC = () => {
   const navigate = useNavigate();
-  const [showLogoutModal, setShowLogoutModal] = React.useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [balance, setBalance] = useState("0.00");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("balance");
+    setBalance(parseFloat(stored || "0").toFixed(2));
+  }, []);
 
   const handleItemClick = (item: any) => {
     if (item.logout) {
@@ -37,10 +43,20 @@ const Settings: React.FC = () => {
           style={{ height: "60px", objectFit: "contain" }}
         />
         <h5 className="mt-3">Moja ALGEBRA KARTICA</h5>
-        <div className="fs-2 fw-bold">€0,23</div>
+        <div className="fs-2 fw-bold">€{balance}</div>
         <div className="d-flex justify-content-center gap-2 mt-3">
-          <button className="btn btn-primary px-4" onClick = {() => navigate('/topup')  }>NADOPLATI </button>
-          <button className="btn btn-outline-light px-4" onClick = {() => navigate('/history')  }>DETALJI</button>
+          <button
+            className="btn btn-primary px-4"
+            onClick={() => navigate("/topup")}
+          >
+            NADOPLATI
+          </button>
+          <button
+            className="btn btn-outline-light px-4"
+            onClick={() => navigate("/history")}
+          >
+            DETALJI
+          </button>
         </div>
       </div>
 
