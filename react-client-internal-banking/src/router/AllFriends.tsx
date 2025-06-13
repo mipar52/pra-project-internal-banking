@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import algebraLogo from "../assets/algebra-logo.png";
 import axios from "axios";
+import axiosInstance from "../axiosHelper/axiosInstance";
 
 interface Friend {
   firstName: string;
@@ -30,7 +31,7 @@ const AllFriends: React.FC = () => {
       }
 
       try {
-        const response = await axios.get(
+        const response = await axiosInstance.get(
           `http://localhost:5026/api/Friend/GetFriendsByEmail/${encodeURIComponent(
             email
           )}`,
