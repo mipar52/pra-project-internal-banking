@@ -1,121 +1,163 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Html5Qrcode } from "html5-qrcode";
-import { Html5QrcodeScannerState } from "html5-qrcode";
+import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../axiosHelper/axiosInstance";
+import LoadingBar from "../components/LoadingBar";
+import ErrorPopup from "../components/ErrorPopup";
+import SuccessPopup from "./SuccessPopup";
 
 const QrScanner: React.FC = () => {
   const qrRegionId = "qr-reader";
   const scannerRef = useRef<Html5Qrcode | null>(null);
+  const isTransitioningRef = useRef(false);
   const [scanned, setScanned] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [showLoading, setShowLoading] = useState(false);
   const navigate = useNavigate();
-  const isTransitioningRef = useRef(false);
-  let isMounted = true;
 
   const startScanner = async () => {
     if (isTransitioningRef.current) return;
 
-    const element = document.getElementById(qrRegionId);
-    if (element) {
-      element.innerHTML = "";
-    }
-
-    if (!scannerRef.current) {
-      scannerRef.current = new Html5Qrcode(qrRegionId);
-    }
-
-    const devices = await Html5Qrcode.getCameras();
-    if (devices.length === 0) {
-      setError("No cameras found.");
+    const container = document.getElementById(qrRegionId);
+    if (!container) {
+      console.error("QR container not found.");
       return;
+    }
+    container.innerHTML = "";
+
+    if (scannerRef.current === null) {
+      scannerRef.current = new Html5Qrcode(qrRegionId);
     }
 
     const scanner = scannerRef.current;
 
+    const state = scanner.getState();
     if (
-      scanner.getState &&
-      scanner.getState() === Html5QrcodeScannerState.SCANNING
+      state !== Html5QrcodeScannerState.NOT_STARTED &&
+      state !== Html5QrcodeScannerState.PAUSED
     ) {
+      console.warn("Scanner is currently transitioning or already started.");
       return;
     }
 
     try {
+      const devices = await Html5Qrcode.getCameras();
+      if (devices.length === 0) {
+        setError("No cameras found.");
+        return;
+      }
+
+      isTransitioningRef.current = true;
+
       await scanner.start(
         devices[0].id,
         {
           fps: 10,
-          qrbox: (viewportWidth, viewportHeight) => {
-            const minEdge = Math.min(viewportWidth, viewportHeight);
+          qrbox: (vw, vh) => {
+            const minEdge = Math.min(vw, vh);
             return {
               width: Math.floor(minEdge * 0.8),
               height: Math.floor(minEdge * 0.8),
             };
           },
         },
-        (decodedText) => {
-          if (!scanned && isMounted && !isTransitioningRef.current) {
-            setScanned(decodedText);
-            isTransitioningRef.current = true;
+        async (decodedText) => {
+          if (scanned || isTransitioningRef.current) return;
 
-            // Re-route to enter-manually screen
-            // Example QR: 
-            // AlgebraQR{"recipientName":"Algebra", "iban":"HR1234567890", "amount":"123.45", "model":"HR01", "referenceNumber":"2024-12345", "description":"Tuition"}
-            if (decodedText.includes("AlgebraQR")) {
-              try {
-                const data = JSON.parse(decodedText.replace("AlgebraQR", ""));
-                navigate("/enter-manually", { state: data });
+          isTransitioningRef.current = true;
+          // scanner.pause();
+          setScanned(decodedText);
 
-                /**
-                 * navigate("/enter-manually", {
-  state: {
-    recipientName: "Algebra",
-    iban: "HR1234567890",
-    amount: "123.45",
-    model: "HR01",
-    referenceNumber: "2024-12345",
-    description: "Tuition"
-  }
-});
-                 */
-              } catch (err) {
-                setError("Invalid QR format.");
-              }
+          try {
+            const cleaned = decodedText.replace("AlgebraQR", "");
+            console.log(`cleaned: ${cleaned}`);
+            const parsed = JSON.parse(cleaned);
+            console.log(`parsed: ${parsed}`);
+
+            if (!parsed.type || parsed.type !== "ALGEBRAQR") {
+              setError("Not an official Algebra QR code.");
+              scanner.resume();
+              return;
+            }
+            console.log("scanner paused!");
+            //   scanner.pause();
+            const userEmail = localStorage.getItem("userEmail");
+            const jwt = localStorage.getItem("jwtToken");
+
+            if (!userEmail || !jwt) {
+              setError("User session not found.");
+              return;
             }
 
-            if (!scanner.isScanning) {
-              scanner
-                .stop()
-                .then(() => {
-                  console.log("Scanner stopped");
-                  return scanner.clear();
-                })
-                .then(() => {
-                  isTransitioningRef.current = false;
-                })
-                .catch((err) => {
-                  console.warn("Error during stop/clear", err);
-                  isTransitioningRef.current = false;
+            if (parsed.friendEmail) {
+              // Friend QR
+              setShowLoading(true);
+              await axiosInstance.post(
+                "http://localhost:5026/api/Friend/CreateFriendByMail",
+                {
+                  userEmail,
+                  friendEmail: parsed.friendEmail,
+                },
+                {
+                  headers: { Authorization: `Bearer ${jwt}` },
+                }
+              );
+              setSuccess(
+                `Successfully added ${parsed.friendEmail} to friends!\nRedirecting to your friends...`
+              );
+              setTimeout(() => {
+                navigate("/all-friends");
+              }, 4000);
+            } else if (parsed.amount && parsed.transactionTypeId) {
+              // Payment QR
+              setSuccess(
+                `Successfully obtained the payment QR code! Good job!\nRedirecting to the payment screen...`
+              );
+              setTimeout(() => {
+                navigate("/enter-manually", {
+                  state: {
+                    amount: parsed.amount,
+                    transactionTypeId: parsed.transactionTypeId,
+                  },
                 });
+              }, 4000);
+            } else {
+              setError("Unsupported QR content.");
             }
+          } catch (err) {
+            console.error("QR parse error:", err);
+            scanner.pause();
+            scanner.resume();
+            setError("Invalid QR format.");
+            navigate("/dashboard");
+          } finally {
+            setShowLoading(false);
+            try {
+              await scanner.pause();
+            } catch (err) {
+              console.warn("Scanner stop/clear failed", err);
+            }
+            isTransitioningRef.current = false;
           }
         },
-        (errorMessage) => {
-          if (isMounted) console.warn("QR error", errorMessage);
+        (scanErr) => {
+          console.warn("QR scan error:", scanErr);
         }
       );
-
-      isTransitioningRef.current = false;
     } catch (err) {
       console.error("Scanner error:", err);
-      setError("Camer error: " + err);
+      setError("Camera error: " + err);
       isTransitioningRef.current = false;
     }
   };
 
   useEffect(() => {
-    startScanner();
+    requestAnimationFrame(() => {
+      startScanner();
+    });
+
     return () => {
-      isMounted = false;
       scannerRef.current?.stop().catch(() => {});
     };
   }, []);
@@ -130,6 +172,12 @@ const QrScanner: React.FC = () => {
         overflow: "hidden",
       }}
     >
+      {showLoading && <LoadingBar message="Processing QR code..." />}
+      {success && (
+        <SuccessPopup message={success} onClose={() => setSuccess(null)} />
+      )}
+      {error && <ErrorPopup message={error} onClose={() => setError(null)} />}
+
       <div
         className="position-absolute top-0 start-0 end-0 py-3 px-4 text-white"
         style={{ backgroundColor: "#00AEEF", zIndex: 10 }}
@@ -154,38 +202,6 @@ const QrScanner: React.FC = () => {
           position: "relative",
         }}
       />
-
-      {scanned && (
-        <div
-          className="alert alert-success position-absolute bottom-0 start-0 end-0 m-3 text-center"
-          style={{ zIndex: 10 }}
-        >
-          <strong>Scanned:</strong> {scanned}
-          <br />
-          <button
-            className="btn btn-primary mt-2"
-            onClick={() => navigate("/dashboard")}
-          >
-            Back to Dashboard
-          </button>
-        </div>
-      )}
-
-      {error && (
-        <div
-          className="alert alert-danger position-absolute bottom-0 start-0 end-0 m-3 text-center"
-          style={{ zIndex: 10 }}
-        >
-          {error}
-          <br />
-          <button
-            className="btn btn-secondary mt-2"
-            onClick={() => navigate("/dashboard")}
-          >
-            Back
-          </button>
-        </div>
-      )}
     </div>
   );
 };
