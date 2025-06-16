@@ -112,6 +112,51 @@ namespace PRA_project.Controllers
 
         }
 
+        [HttpGet("[action]/{email}")]
+        public ActionResult GetFriendsByEmail(string email)
+        {
+            try
+            {
+                var user = _context.Users.FirstOrDefault(x => x.EmailAddress == email);
+
+
+                if (user == null)
+                {
+                    return BadRequest($"User with IDUser {email} was not found.");
+                }
+
+                var friendIds = _context.Friends
+                    .Where(x => x.UserId == user.IdUser)
+                    .Select(x => x.FriendId)
+                    .ToList();
+
+                if (!friendIds.Any())
+                {
+                    return BadRequest("NIJE DOBRO");
+                }
+
+                var getFriends = _context.Users
+                    .Where(u => friendIds.Contains(u.IdUser))
+                    .Select(u => new FriendGetDto
+                    {
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                        PhoneNumber = u.PhoneNumber,
+                        EmailAddress = u.EmailAddress,
+                        ProfilePictureUrl = u.ProfilePictureUrl
+                    })
+                    .ToList();
+
+                return Ok(getFriends);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest($"Friend failed");
+            }
+
+        }
+
         [HttpPost("[action]/{idUser}")]
         public ActionResult CreateFriendById(FriendCreateDto dto) 
         {
@@ -131,6 +176,57 @@ namespace PRA_project.Controllers
                 if (user == null)
                 {
                     return BadRequest($"User with IDUser {dto.FriendId} was not found.");
+                }
+
+                if (_context.Friends.Any(x => x.UserId == user.IdUser && x.FriendId == friend.IdUser))
+                {
+                    return BadRequest($"You are already a friend with {friend.FirstName} {friend.LastName}");
+                }
+
+                Friend friends = new Friend()
+                {
+                    UserId = user.IdUser,
+                    FriendId = friend.IdUser
+                };
+
+                Friend viceVersaFriends = new Friend()
+                {
+                    UserId = friend.IdUser,
+                    FriendId = user.IdUser
+                };
+
+                _context.Friends.Add(friends);
+                _context.Friends.Add(viceVersaFriends);
+                _context.SaveChanges();
+
+                return Ok(dto);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest($"Friend failed");
+            }
+        }
+
+        [HttpPost("[action]")]
+        public ActionResult CreateFriendByMail(FriendCreateMailDto dto)
+        {
+            try
+            {
+                var user = _context.Users.FirstOrDefault(x => x.EmailAddress == dto.UserEmail);
+
+
+                if (user == null)
+                {
+                    return BadRequest($"User with email {dto.UserEmail} was not found.");
+                }
+
+                var friend = _context.Users.FirstOrDefault(x => x.EmailAddress == dto.FriendEmail);
+
+
+                if (user == null)
+                {
+                    return BadRequest($"User with email {dto.UserEmail} was not found.");
                 }
 
                 if (_context.Friends.Any(x => x.UserId == user.IdUser && x.FriendId == friend.IdUser))
@@ -192,6 +288,53 @@ namespace PRA_project.Controllers
                 }
 
                 Friend viceVersaFriends = _context.Friends.FirstOrDefault(x => x.UserId == friend.IdUser && x.FriendId == user.IdUser);
+
+                if (viceVersaFriends == null)
+                {
+                    return BadRequest($"These friendship does not exist!");
+                }
+
+                _context.Friends.Remove(friends);
+                _context.Friends.Remove(viceVersaFriends);
+                _context.SaveChanges();
+
+                return Ok(dto);
+            }
+            catch (Exception)
+            {
+                return BadRequest($"Friend failed");
+            }
+        }
+
+        [HttpDelete("[action]")]
+        public ActionResult DeleteFriendByMail(FriendCreateMailDto dto)
+        {
+            try
+            {
+                var user = _context.Users.FirstOrDefault(x => x.EmailAddress == dto.UserEmail);
+
+
+                if (user == null)
+                {
+                    return BadRequest($"User with mail {dto.UserEmail} was not found.");
+                }
+
+                var friend = _context.Users.FirstOrDefault(x => x.EmailAddress == dto.FriendEmail);
+
+
+                if (user == null)
+                {
+                    return BadRequest($"User with email {dto.FriendEmail} was not found.");
+                }
+
+                var friends = _context.Friends.FirstOrDefault(x => x.UserId == user.IdUser && x.FriendId == friend.IdUser);
+
+                if (friend == null)
+                {
+                    return BadRequest($"These friendship does not exist!");
+                }
+
+                var viceVersaFriends = _context.Friends.FirstOrDefault(x => x.UserId == friend.IdUser && x.FriendId == user.IdUser);
 
                 if (viceVersaFriends == null)
                 {

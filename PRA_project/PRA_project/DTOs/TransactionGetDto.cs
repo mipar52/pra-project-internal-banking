@@ -1,4 +1,5 @@
 ﻿using PRA_project.Controllers;
+using PRA_project.Models;
 
 namespace PRA_project.DTOs
 {
@@ -11,7 +12,5 @@ namespace PRA_project.DTOs
         public DateTime Date { get; set; }
 
         public int TransactionTypeId { get; set; }
-
-        
     }
 }

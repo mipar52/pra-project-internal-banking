@@ -11,7 +11,9 @@ namespace PRA_1.Services
     {
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl = "https://d9zgrg.api.infobip.com";
+
         private readonly string _apiKey = "8a2923717c4903b01202b6e0d1af1146-871aba2d-19bf-4e04-b53d-50aaf065ffec";
+        //private readonly string _apiKey = "d758a3890e9f69ad7f94575d1ed344b7-5a42dd11-b36e-4529-a9d0-34275d882258";
 
         public InfobipSmsService()
         {

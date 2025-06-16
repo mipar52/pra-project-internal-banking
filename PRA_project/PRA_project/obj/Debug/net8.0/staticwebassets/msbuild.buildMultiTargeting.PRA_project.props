@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\PRA_project.props" />
-</Project>

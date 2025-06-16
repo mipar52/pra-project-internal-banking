@@ -1,10 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PRA_1.DTOs;
 using PRA_1.Security;
 using PRA_1.Services;
 using PRA_project.DataSaver;
+using PRA_project.DTOs;
 using PRA_project.Models;
+using System.Diagnostics.Eventing.Reader;
+using System.Net.Mail;
+using System.Security.Claims;
+using Twilio.Types;
 
 namespace PRA_project.Controllers
 {
@@ -43,24 +51,35 @@ namespace PRA_project.Controllers
         {
             try
             {
-               
-                var b64salt = PasswordHashProvider.GetSalt();
-                var b64hash = PasswordHashProvider.GetHash(userCreateDto.Password, b64salt);
+                var user = _context.Users.FirstOrDefault(u => u.EmailAddress == userCreateDto.EmailAddress);
 
-                User user = new User()
+                if (user == null) {
+                    var b64salt = PasswordHashProvider.GetSalt();
+                    var b64hash = PasswordHashProvider.GetHash(userCreateDto.Password, b64salt);
+                    user = new User()
+                    {
+                        FirstName = userCreateDto.FirstName,
+                        LastName = userCreateDto.LastName,
+                        EmailAddress = userCreateDto.EmailAddress,
+                        PhoneNumber = userCreateDto.PhoneNumber,
+                        PasswordHash = b64hash,
+                        PasswordSalt = b64salt,
+                        RoleId = userCreateDto.RoleId,
+                        StudyProgramId = userCreateDto.StudyProgramId,
+                        ProfilePictureUrl = GetProfilePicture.GetProfilePicturePath(userCreateDto.EmailAddress)
+                    };
+                    _context.Users.Add(user);
+                } else
                 {
-                    FirstName = userCreateDto.FirstName,
-                    LastName = userCreateDto.LastName,
-                    EmailAddress = userCreateDto.EmailAddress,
-                    PhoneNumber = userCreateDto.PhoneNumber,
-                    PasswordHash = b64hash,
-                    PasswordSalt = b64salt,
-                    RoleId = userCreateDto.RoleId,
-                    StudyProgramId = userCreateDto.StudyProgramId,
-                    ProfilePictureUrl = GetProfilePicture.GetProfilePicturePath(userCreateDto.EmailAddress)
-                };
+                    user.FirstName = userCreateDto.FirstName;
+                    user.LastName = userCreateDto.LastName;
+                 //   user.EmailAddress = userCreateDto.EmailAddress;
+                    user.PhoneNumber = userCreateDto.PhoneNumber;
+                    user.ProfilePictureUrl = GetProfilePicture.GetProfilePicturePath(userCreateDto.EmailAddress);
+                }
 
-                _context.Users.Add(user);
+
+                
                 _context.SaveChanges();
 
                 BillingAccount account = new BillingAccount()
@@ -111,7 +130,7 @@ namespace PRA_project.Controllers
                 _context.Users.Update(existingUser);
                 _context.SaveChanges();
 
-                string tempEmail = "pra-projekt@outlook.com";
+                string tempEmail = "milanparadina83@gmail.com";
                 string tempPhone = "+385955199757";
 
                 if (UserDto.CodeSenderOption == "email")
@@ -173,6 +192,39 @@ namespace PRA_project.Controllers
 
             return Ok(seralizedToken);
         }
- 
+
+        [HttpGet("[action]")]
+        public ActionResult<UserDto> GetUserByMail(string email)
+        {
+            try
+            {
+                var user = _context.Users
+                    .Include(u => u.StudyProgram)
+                    .Include(u => u.Role)
+                    .FirstOrDefault(u => u.EmailAddress == email);
+                    
+                if (user == null)
+                    return NotFound("User not found.");
+
+                var mappedResult = new UserDto
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    EmailAddress = user.EmailAddress,
+                    PhoneNumber = user.PhoneNumber,
+                    StudyProgramme = user.StudyProgram.Name,
+                    Role = user.Role.Name,
+                    ProfilePictureUrl = user.ProfilePictureUrl
+                };
+
+                return Ok(mappedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
+
 }
+

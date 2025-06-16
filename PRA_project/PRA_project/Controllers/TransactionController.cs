@@ -55,6 +55,40 @@ namespace PRA_project.Controllers
             return Ok(getTrans);
         }
 
+        [HttpGet("[action]/{email}")]
+        public ActionResult GetTransactionsByEmail(string email)
+        {
+            var user = _context.Users
+                        .FirstOrDefault(x => x.EmailAddress == email);
+
+            if (user == null)
+            {
+                return BadRequest($"User with email {email} was not found.");
+            }
+
+            List<Transaction> transactions = _context.Transactions
+                .Include(x => x.TransactionType)
+                .Where(x => x.UserId == user.IdUser)
+                .ToList();
+
+            List<TransactionGetDto> getTrans = new List<TransactionGetDto>();
+
+            foreach (var t in transactions)
+            {
+                getTrans.Add
+                (
+                    new TransactionGetDto
+                    {
+                        TypeName = t.TransactionType.TypeName,
+                        Date = t.Date,
+                        Amount = t.Amount,
+                    }
+                );
+            }
+
+            return Ok(getTrans);
+        }
+
         [HttpGet("[action]/{IdUser}/{month}")]
         public ActionResult GetTransactionsByMonthById(int IdUser, int month)
         {
@@ -169,6 +203,57 @@ namespace PRA_project.Controllers
         }
 
         [HttpPost("[action]")]
+        public ActionResult TransactionCreateByMail(TransactionCreateDto transDto)
+        {
+            try
+            {
+                var user = _context.Users
+                         .FirstOrDefault(x => x.EmailAddress == transDto.UserEmail);
+
+                if (user == null)
+                    return BadRequest($"User with email {transDto.UserEmail} does not exist!");
+
+                Transaction transaction = new Transaction()
+                {
+                    UserId = user.IdUser,
+                    TransactionTypeId = transDto.TransactionTypeId,
+                    Amount = transDto.Amount,
+                    Date = CurrentDateTime,
+                };
+
+                BillingAccount account = _context.BillingAccounts.FirstOrDefault(x => x.UserId == user.IdUser);
+
+                if (account == null)
+                {
+                    return BadRequest($"Billing account with UserID {transDto.UserId} was not found.");
+                }
+
+                if (transDto.TransactionTypeId != 5)
+                {
+                    if (account.Balance < transDto.Amount)
+                    {
+                        return BadRequest($"Insufficient funds.");
+                    }
+
+                    account.Balance -= transDto.Amount;
+                }
+
+
+                _context.Transactions.Add(transaction);
+                _context.BillingAccounts.Update(account);
+                _context.SaveChanges();
+
+                FkTransactionId = transaction.IdTransaction;
+
+                return Ok(transDto);
+            }
+            catch (Exception)
+            {
+                return BadRequest($"Transaction failed");
+            }
+        }
+
+        [HttpPost("[action]")]
         public ActionResult ScholarshipTransactionCreate(ScholarshipTransactionCreateDto scholarshipDto)
         {
             try
@@ -192,6 +277,54 @@ namespace PRA_project.Controllers
                 TransactionCreateDto transDto = new TransactionCreateDto()
                 {
                     UserId = scholarshipDto.UserId,
+                    TransactionTypeId = scholarshipDto.TransactionTypeId,
+                    Amount = user.StudyProgram.Amount,
+                    Date = scholarshipDto.Date,
+                };
+
+                try
+                {
+                    TransactionCreate(transDto);
+                }
+                catch (Exception)
+                {
+
+                    return BadRequest($"Transaction failed");
+                }
+
+                return Ok(scholarshipDto);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest($"Transaction failed");
+            }
+        }
+
+        [HttpPost("[action]")]
+        public ActionResult ScholarshipTransactionCreateMail(ScholarshipTransactionCreateMailDto scholarshipDto)
+        {
+            try
+            {
+                var user = _context.Users
+                        .Include(x => x.StudyProgram)
+                        .FirstOrDefault(x => x.EmailAddress == scholarshipDto.UserEmail);
+
+                if (user == null)
+                {
+                    return BadRequest($"User with IDUser {scholarshipDto.UserEmail} was not found.");
+                }
+
+                BillingAccount account = _context.BillingAccounts.FirstOrDefault(x => x.UserId == user.IdUser);
+
+                if (account == null)
+                {
+                    return BadRequest($"Billing account with UserID {user.IdUser} was not found.");
+                }
+
+                TransactionCreateDto transDto = new TransactionCreateDto()
+                {
+                    UserId = user.IdUser,
                     TransactionTypeId = scholarshipDto.TransactionTypeId,
                     Amount = user.StudyProgram.Amount,
                     Date = scholarshipDto.Date,
@@ -246,6 +379,61 @@ namespace PRA_project.Controllers
                 TransactionCreateDto transDto = new TransactionCreateDto()
                 {
                     UserId = parkingDto.UserId,
+                    TransactionTypeId = parkingDto.TransactionTypeId,
+                    Amount = parkingRate * parkingDto.DurationHours,
+                    Date = parkingDto.Date
+
+                };
+
+                try
+                {
+                    TransactionCreate(transDto);
+                }
+                catch (Exception)
+                {
+
+                    return BadRequest($"Transaction failed");
+                }
+
+                ParkingPayment parking = new ParkingPayment()
+                {
+                    RegistrationCountryCode = parkingDto.RegistrationCountryCode,
+                    RegistrationNumber = parkingDto.RegistrationNumber,
+                    DurationHours = parkingDto.DurationHours,
+                    StartTime = CurrentDateTime,
+                    EndTime = CurrentDateTime.AddHours(parkingDto.DurationHours),
+                    TransactionId = FkTransactionId
+                };
+
+                _context.ParkingPayments.Add(parking);
+                _context.SaveChanges();
+
+                return Ok(parkingDto);
+            }
+            catch (Exception)
+            {
+                return BadRequest($"Transaction failed");
+            }
+        }
+
+        [HttpPost("[action]")]
+        public ActionResult ParkingTransactionCreateMail(ParkingTransactionCreateMailDto parkingDto)
+        {
+            try
+            {
+                var user = _context.Users
+                        .FirstOrDefault(x => x.EmailAddress == parkingDto.UserEmail);
+
+                if (user == null)
+                {
+                    return BadRequest($"User with IDUser {parkingDto.UserEmail} was not found.");
+                }
+
+                decimal parkingRate = 2.5m;
+
+                TransactionCreateDto transDto = new TransactionCreateDto()
+                {
+                    UserId = user.IdUser,
                     TransactionTypeId = parkingDto.TransactionTypeId,
                     Amount = parkingRate * parkingDto.DurationHours,
                     Date = parkingDto.Date
@@ -352,6 +540,74 @@ namespace PRA_project.Controllers
         }
 
         [HttpPost("[action]")]
+        public ActionResult MoneyTransferCreateMail(MoneyTransferCreateMailDto dto)
+        {
+            try
+            {
+                var userReciever = _context.Users
+                              .FirstOrDefault(x => x.EmailAddress == dto.UserRecieverEmail);
+
+                if (userReciever == null)
+                {
+                    return BadRequest($"User with IDUser {dto.UserRecieverEmail} was not found.");
+                }
+
+                var userSender = _context.Users
+                           .FirstOrDefault(x => x.EmailAddress == dto.UserSenderEmail);
+
+                if (userReciever == null)
+                {
+                    return BadRequest($"User with IDUser {dto.UserSenderEmail} was not found.");
+                }
+
+
+                TransactionCreateDto transDto = new TransactionCreateDto()
+                {
+                    UserId = userSender.IdUser,
+                    TransactionTypeId = dto.TransactionTypeId,
+                    Amount = dto.Amount,
+                    Date = dto.Date
+                };
+
+                try
+                {
+                    TransactionCreate(transDto);
+                }
+                catch (Exception)
+                {
+
+                    return BadRequest($"Transaction failed");
+                }
+
+                MoneyTransfer moneyTransfer = new MoneyTransfer()
+                {
+                    UserRecieverId = userReciever.IdUser,
+                    TransactionId = FkTransactionId
+                };
+
+                BillingAccount billingAccount = _context.BillingAccounts.FirstOrDefault(x => x.UserId == userReciever.IdUser);
+
+                if (billingAccount == null)
+                {
+                    return BadRequest($"Billing account with UserID {userReciever.IdUser} was not found.");
+                }
+
+                billingAccount.Balance += dto.Amount;
+
+
+                _context.BillingAccounts.Update(billingAccount);
+                _context.MoneyTransfers.Add(moneyTransfer);
+                _context.SaveChanges();
+
+                return Ok(dto);
+            }
+            catch (Exception)
+            {
+                return BadRequest($"Transaction failed");
+            }
+        }
+
+        [HttpPost("[action]")]
         public ActionResult RequestTransferCreate(RequestTransferDto dto)
         {
             try
@@ -377,6 +633,47 @@ namespace PRA_project.Controllers
                 {
                     UserSenderId = dto.UserSenderId,
                     UserRecieverId = dto.UserRecieverId,
+                    Amount = dto.Amount,
+                    Date = dto.Date
+                };
+
+                _context.RequestTransfers.Add(reqTransfer);
+                _context.SaveChanges();
+
+                return Ok(dto);
+            }
+            catch (Exception)
+            {
+                return BadRequest($"Transaction failed");
+            }
+        }
+
+        [HttpPost("[action]")]
+        public ActionResult RequestTransferCreateWithMain(RequestTransferMailDto dto)
+        {
+            try
+            {
+                var userReciever = _context.Users
+                              .FirstOrDefault(x => x.EmailAddress == dto.UserReceiverEmail);
+
+                if (userReciever == null)
+                {
+                    return BadRequest($"User with email {dto.UserReceiverEmail} was not found.");
+                }
+
+                var userSender = _context.Users
+                           .FirstOrDefault(x => x.EmailAddress == dto.UserSenderEmail);
+
+                if (userReciever == null)
+                {
+                    return BadRequest($"User with IDUser email {dto.UserSenderEmail} was not found.");
+                }
+
+
+                RequestTransfer reqTransfer = new RequestTransfer()
+                {
+                    UserSenderId = userSender.IdUser,
+                    UserReciever = userReciever,
                     Amount = dto.Amount,
                     Date = dto.Date
                 };
@@ -436,6 +733,49 @@ namespace PRA_project.Controllers
             return Ok(dto);
         }
 
+        [HttpPut("[action]")]
+        public ActionResult AddBalanceByMail(AddBalanceMailDto dto)
+        {
+            var user = _context.Users
+                        .FirstOrDefault(x => x.EmailAddress == dto.EmailUser);
 
+            if (user == null)
+            {
+                return BadRequest($"User with email {dto.EmailUser} was not found.");
+            }
+
+            var account = _context.BillingAccounts.FirstOrDefault(x => x.UserId == user.IdUser);
+
+            if (account == null)
+            {
+                return BadRequest($"Billing account with UserID {user.IdUser} was not found.");
+            }
+
+            TransactionCreateDto transDto = new TransactionCreateDto()
+            {
+                UserId = user.IdUser,
+                TransactionTypeId = dto.TransactionTypeId,
+                Amount = dto.Amount,
+                Date = dto.Date,
+            };
+
+            try
+            {
+                TransactionCreate(transDto);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest($"Transaction failed");
+            }
+
+            account.Balance += dto.Amount;
+
+            _context.BillingAccounts.Update(account);
+            _context.SaveChanges();
+
+            return Ok(dto);
+        }
     }
 }
+
