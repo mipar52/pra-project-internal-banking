@@ -168,7 +168,7 @@ namespace PRA_project.Controllers
 
             if (user == null) return BadRequest("Invalid user.");
 
-            if (userDto.AuthCode != user.Temp2Facode || user.Temp2FacodeExpires < DateTime.Now)
+            if (userDto.AuthCode != user.Temp2Facode || user.Temp2FacodeExpires < userDto.AuthCodeTime)
             {
                 userExtra.Email = null;
                 user.Temp2Facode = null;

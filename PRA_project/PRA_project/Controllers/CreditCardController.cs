@@ -212,23 +212,23 @@ namespace PRA_project.Controllers
         {
             User user = _context.Users.FirstOrDefault(x => x.IdUser == dto.UserId);
 
-            if (User == null)
+            if (user == null)
             {
                 return BadRequest($"User with {dto.UserId} was not found.");
             }
 
-            CreditCard cc = _context.CreditCards.FirstOrDefault(x => x.IdCreditCard  == dto.CreditCardId);
+            CreditCard cc = _context.CreditCards.FirstOrDefault(x => x.IdCreditCard == dto.CreditCardId);
 
             if (cc == null)
             {
-                return BadRequest($"Credit card with IDCreditCard {dto.CreditCardId} was not found."); 
+                return BadRequest($"Credit card with IDCreditCard {dto.CreditCardId} was not found.");
             }
 
             UserCreditCard userCreditCard = _context.UserCreditCards.FirstOrDefault(x => x.CreditCardId == cc.IdCreditCard && x.UserId == user.IdUser);
 
             if (userCreditCard == null)
             {
-                return BadRequest($"NEMA DALJE");
+                return BadRequest($"User does not have Credit Card saved in the system.");
             }
 
             _context.UserCreditCards.Remove(userCreditCard);

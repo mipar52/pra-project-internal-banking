@@ -85,10 +85,10 @@ namespace PRA_project.Controllers
                     .Select(x => x.FriendId)
                     .ToList();
 
-                if (!friendIds.Any())
-                {
-                    return BadRequest("NIJE DOBRO");
-                }
+                //if (!friendIds.Any())
+                //{
+                //    return BadRequest("NIJE DOBRO");
+                //}
 
                 var getFriends = _context.Users
                     .Where(u => friendIds.Contains(u.IdUser))
@@ -158,7 +158,7 @@ namespace PRA_project.Controllers
         }
 
         [HttpPost("[action]/{idUser}")]
-        public ActionResult CreateFriendById(FriendCreateDto dto) 
+        public ActionResult CreateFriendById(FriendCreateDto dto)
         {
             try
             {
@@ -173,7 +173,7 @@ namespace PRA_project.Controllers
                 User friend = _context.Users.FirstOrDefault(x => x.IdUser == dto.FriendId);
 
 
-                if (user == null)
+                if (friend == null)
                 {
                     return BadRequest($"User with IDUser {dto.FriendId} was not found.");
                 }
@@ -266,7 +266,6 @@ namespace PRA_project.Controllers
             {
                 User user = _context.Users.FirstOrDefault(x => x.IdUser == dto.UserId);
 
-
                 if (user == null)
                 {
                     return BadRequest($"User with IDUser {dto.UserId} was not found.");
@@ -274,15 +273,14 @@ namespace PRA_project.Controllers
 
                 User friend = _context.Users.FirstOrDefault(x => x.IdUser == dto.FriendId);
 
-
-                if (user == null)
+                if (friend == null)
                 {
                     return BadRequest($"User with IDUser {dto.FriendId} was not found.");
                 }
 
                 Friend friends = _context.Friends.FirstOrDefault(x => x.UserId == user.IdUser && x.FriendId == friend.IdUser);
 
-                if (friend == null)
+                if (friends == null)
                 {
                     return BadRequest($"These friendship does not exist!");
                 }
@@ -291,7 +289,7 @@ namespace PRA_project.Controllers
 
                 if (viceVersaFriends == null)
                 {
-                    return BadRequest($"These friendship does not exist!");
+                    return BadRequest($"These friendship does not exist2!");
                 }
 
                 _context.Friends.Remove(friends);
