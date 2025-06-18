@@ -1,10 +1,10 @@
+# 💳 Internal Banking Web App
 
-# 💳 Algebra Bankica – Internal Banking Web App
-
-**Algebra Bankica** is a modern digital application developed for the students and staff of **Algebra University College (Bernays)**.  
+A modern digital application developed for the students and staff for universities.  
 The application enables secure and easy management of personal finances within the university environment.
 
 Through the web interface, users can:
+
 - Securely execute transactions
 - Scan QR codes for quick payments
 - Manage their cards and financial information
@@ -39,6 +39,7 @@ Then visit the local URL (e.g., `http://localhost:5173`) in your browser.
 ### 📚 Libraries Used
 
 **Core Libraries**
+
 - `react` – UI component library
 - `react-dom` – DOM rendering
 - `react-router-dom` – Page routing
@@ -46,6 +47,7 @@ Then visit the local URL (e.g., `http://localhost:5173`) in your browser.
 - `typescript` – Static type checking
 
 **UI & Utility**
+
 - `bootstrap`, `react-bootstrap` – Styling and components
 - `react-icons` – Icon set
 - `axios` – API communication
@@ -53,6 +55,7 @@ Then visit the local URL (e.g., `http://localhost:5173`) in your browser.
 - `recharts` – Charting and visualizations
 
 **Development Tools**
+
 - `eslint`, `eslint-plugin-*` – Linting and quality
 - `@types/*` – TypeScript definitions
 - `vite-plugin-react` – React/Vite integration
@@ -85,16 +88,16 @@ react-client-internal-banking/
 
 Located in `src/router/`:
 
-- `Login.tsx` – Login screen  
-- `Dashboard.tsx` – Main dashboard  
-- `EnterManually.tsx` – Manual transaction entry  
-- `QrScanner.tsx` – QR code scanning  
-- `SelectCard.tsx` – Choose payment card  
-- `TransactionDetails.tsx` – Transaction overview  
-- `History.tsx` – Transaction history with charts  
-- `Settings.tsx` – User preferences  
-- `MyProfile.tsx` – Profile page  
-- `AllFriends.tsx` – Bank contacts  
+- `Login.tsx` – Login screen
+- `Dashboard.tsx` – Main dashboard
+- `EnterManually.tsx` – Manual transaction entry
+- `QrScanner.tsx` – QR code scanning
+- `SelectCard.tsx` – Choose payment card
+- `TransactionDetails.tsx` – Transaction overview
+- `History.tsx` – Transaction history with charts
+- `Settings.tsx` – User preferences
+- `MyProfile.tsx` – Profile page
+- `AllFriends.tsx` – Bank contacts
 - `RequestMoney.tsx` – Request funds
 
 ---
@@ -194,8 +197,8 @@ Install **SQL Server Management Studio (SSMS)**
 3. Click **Execute** or press **F5**.
 
 This will:
+
 - Create the database
 - Populate it with demo/test data
 
 ✅ Done! Now you can fully run both the backend and frontend!
-
