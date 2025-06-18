@@ -1,0 +1,45 @@
+.enter-manually-wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #1d1d1b;
+    color: #ffffff;
+    overflow: hidden;
+  }
+  
+  .enter-manually-logo {
+    padding: 1rem 0;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  
+  .enter-manually-form {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 2rem;
+  }
+  
+  .enter-manually-form input {
+    background-color: #2c2c2b;
+    color: #ffffff;
+    border: 1px solid #444;
+  }
+  
+  .enter-manually-button-container {
+    position: fixed;
+    bottom: 80px; /* lift it above BottomNav (typically 64px high) */
+    left: 0;
+    right: 0;
+    background-color: #1d1d1b;
+    border-top: 1px solid #333;
+    padding: 1rem;
+    z-index: 1001; /* higher than BottomNav */
+  }
+  
+  
+  .enter-manually-button-container button {
+    background-color: #00aeef;
+    color: white;
+    width: 100%;
+  }
+  
