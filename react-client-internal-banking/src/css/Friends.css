@@ -1,0 +1,82 @@
+body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .friends-screen {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #121212;
+    color: white;
+  }
+  
+  .top-bar {
+    height: 60px;
+    background-color: #1e1e2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #2c2c2c;
+    z-index: 10;
+  }
+  
+  .algebra-logo {
+    height: 35px;
+  }
+  
+  .friends-header {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #121212;
+    z-index: 5;
+  }
+  
+  .friend-list-scroll {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-bottom: 80px; /* reserve space for BottomNav */
+  }
+  
+  .friend-item {
+    background-color: #1c1c1c;
+    border-bottom: 1px solid #2c2c2c;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .friend-item:hover {
+    background-color: #2a2a2a;
+  }
+  
+  .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    font-weight: bold;
+    color: white;
+    font-size: 0.9rem;
+  }
+  
+
+  input.form-control::placeholder {
+    color: #999;
+  }
+
+  input::placeholder {
+    color: #aaa !important;
+  }
+  
+  input.form-control:focus {
+    box-shadow: none;
+    border-color: #888;
+  }
+  .friends-screen {
+    background-color: #121212;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  

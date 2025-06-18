@@ -1,0 +1,14 @@
+.friend-details-screen {
+    padding-top: 80px;
+    text-align: center;
+  }
+  
+  .avatar-lg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 1.8rem;
+    color: white;
+  }
+  
