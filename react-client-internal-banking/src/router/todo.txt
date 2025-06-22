@@ -1,6 +1,0 @@
-- Details iz transakcija fix
-- Send money - logika za prijatelje
-- QR skener
-- Maknit parking?
-- Top-up logika
-- 

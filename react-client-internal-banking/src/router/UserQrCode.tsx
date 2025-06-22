@@ -8,9 +8,6 @@ interface UserData {
   firstName: string;
   lastName: string;
   emailAddress: string;
-  phoneNumber: string;
-  studyProgramme: string;
-  role: string;
   profilePictureUrl: string | null;
 }
 
@@ -42,7 +39,9 @@ const UserQrCode: React.FC = () => {
             },
           }
         );
-        setUser(response.data);
+        const { firstName, lastName, emailAddress, profilePictureUrl } =
+          response.data;
+        setUser({ firstName, lastName, emailAddress, profilePictureUrl });
       } catch (err) {
         console.error("Error fetching user:", err);
         setError("Failed to load user data.");
@@ -58,14 +57,10 @@ const UserQrCode: React.FC = () => {
   if (error || !user)
     return <p className="text-danger">{error || "Unknown error."}</p>;
 
-  const qrData = JSON.stringify({
-    email: user.emailAddress,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    phoneNumber: user.phoneNumber,
-    studyProgramme: user.studyProgramme,
-    role: user.role,
-  });
+  const qrData = `AlgebraQR${JSON.stringify({
+    type: "ALGEBRAQR",
+    friendEmail: user.emailAddress,
+  })}`;
 
   return (
     <div
@@ -82,20 +77,16 @@ const UserQrCode: React.FC = () => {
       <img
         src={
           user.profilePictureUrl ||
-          "https://i.pravatar.cc/150?u=" + user.emailAddress
+          `https://i.pravatar.cc/150?u=${user.emailAddress}`
         }
         alt="User Avatar"
         className="rounded-circle mb-3"
         style={{ width: 100, height: 100, objectFit: "cover" }}
       />
 
-      <h5 className="fw-bold">
+      <h4 className="fw-bold mb-4">
         {user.firstName} {user.lastName}
-      </h5>
-      <p className="text-secondary mb-1">{user.emailAddress}</p>
-      <p className="text-secondary mb-1">📞 {user.phoneNumber}</p>
-      <p className="text-secondary mb-1">🎓 {user.studyProgramme}</p>
-      <p className="text-secondary mb-3">🧑‍💼 {user.role}</p>
+      </h4>
 
       <div className="bg-white p-3 rounded" style={{ maxWidth: 240 }}>
         <QRCode value={qrData} size={200} fgColor="#000000" bgColor="#FFFFFF" />

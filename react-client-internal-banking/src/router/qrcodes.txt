@@ -1,0 +1,7 @@
+{
+type: ALGEBRAQR,
+amount: 100
+transactionTypeId: 2
+}
+
+AlgebraQR{"type":"ALGEBRAQR","friendEmail":"ivo@algebra.hr"}

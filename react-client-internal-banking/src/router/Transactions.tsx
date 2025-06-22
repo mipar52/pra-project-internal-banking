@@ -111,7 +111,7 @@ const Transactions: React.FC = () => {
 
       {/* Static header + search bar */}
       <div className="friends-header px-3 py-2">
-        <h4 className="fw-bold mb-3">Daj te pare</h4>
+        <h4 className="fw-bold mb-3">All Transactions</h4>
         <div className="position-relative">
           <input
             ref={inputRef}

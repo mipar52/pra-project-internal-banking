@@ -1,6 +1,6 @@
-// src/TopUp.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import SuccessPopup from "../components/SuccessPopup";
 import ErrorPopup from "../components/ErrorPopup";
 import LoadingBar from "../components/LoadingBar";
@@ -11,11 +11,60 @@ const TopUp: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [cards, setCards] = useState<any[]>([]);
+  const [selectedCardIndex, setSelectedCardIndex] = useState(0);
+  const [showCardList, setShowCardList] = useState(false);
 
   const balance = parseFloat(localStorage.getItem("balance") || "0.00");
 
   const increase = () => setAmount((prev) => prev + 1);
   const decrease = () => setAmount((prev) => (prev > 0 ? prev - 1 : 0));
+
+  const getCardLogo = (number: string | undefined) => {
+    if (!number)
+      return "https://download.logo.wine/logo/Mastercard/Mastercard-Logo.wine.png";
+    const bin = number[0];
+    if (bin === "4") return "https://cdn.worldvectorlogo.com/logos/visa-2.svg";
+    if (bin === "5")
+      return "https://download.logo.wine/logo/Mastercard/Mastercard-Logo.wine.png";
+    return "https://download.logo.wine/logo/Mastercard/Mastercard-Logo.wine.png";
+  };
+
+  const maskCardNumber = (num: string | undefined): string => {
+    if (!num || num.length < 8) return "•••• •••• •••• ••••";
+
+    const first4 = num.slice(0, 4);
+    const last4 = num.slice(-4);
+    return `${first4} •••• •••• ${last4}`;
+  };
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      const userEmail = localStorage.getItem("userEmail");
+      const token = localStorage.getItem("jwtToken");
+
+      if (!userEmail || !token) return;
+
+      setIsLoading(true);
+      try {
+        const response = await axios.get(
+          `http://localhost:5026/api/CreditCard/GetCardsByMail/${encodeURIComponent(
+            userEmail
+          )}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setCards(response.data || []);
+      } catch (err) {
+        console.error("Failed to fetch cards:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCards();
+  }, []);
 
   const handleTopUp = async () => {
     const email = localStorage.getItem("userEmail");
@@ -28,6 +77,11 @@ const TopUp: React.FC = () => {
 
     if (amount <= 0) {
       setErrorMsg("Amount must be greater than 0.");
+      return;
+    }
+
+    if (!cards[selectedCardIndex]) {
+      setErrorMsg("No card selected.");
       return;
     }
 
@@ -44,7 +98,7 @@ const TopUp: React.FC = () => {
           },
           body: JSON.stringify({
             emailUser: email,
-            amount,
+            amount: amount * 100,
             date: new Date().toISOString(),
             transactionTypeId: 5,
           }),
@@ -56,10 +110,8 @@ const TopUp: React.FC = () => {
         throw new Error(err?.message || "Top-up failed.");
       }
 
-      // Update local balance
       const newBalance = balance + amount;
       localStorage.setItem("balance", newBalance.toFixed(2));
-
       setShowSuccess(true);
     } catch (err: any) {
       setErrorMsg(err.message || "An error occurred while topping up.");
@@ -67,6 +119,8 @@ const TopUp: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  const selectedCard = cards[selectedCardIndex];
 
   return (
     <div className="text-white bg-black vh-100 d-flex flex-column">
@@ -78,7 +132,7 @@ const TopUp: React.FC = () => {
         >
           ✕
         </button>
-        <h5 className="mb-0">My KEKSICA</h5>
+        <h5 className="mb-0">Add balance to account</h5>
       </div>
 
       {/* Amount Section */}
@@ -114,27 +168,69 @@ const TopUp: React.FC = () => {
         </p>
       </div>
 
-      {/* Card Info + Button */}
+      {/* Card Selector */}
       <div className="bg-dark p-3" style={{ marginBottom: "80px" }}>
-        <div
-          className="d-flex align-items-center justify-content-between bg-black text-white p-2 rounded mb-3"
-          role="button"
-          onClick={() => navigate("/select-card")}
-        >
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
-            alt="Visa"
-            width={40}
-          />
-          <div className="ms-2">
-            <small>Paying with:</small>
-            <br />
-            <strong>VISA 439649******6141</strong>
+        {selectedCard && (
+          <div
+            className="d-flex align-items-center justify-content-between bg-black text-white p-3 rounded mb-3"
+            onClick={() => setShowCardList((prev) => !prev)}
+            style={{ cursor: "pointer" }}
+          >
+            <img
+              src={getCardLogo(selectedCard.creditCardNumber)}
+              alt="Logo"
+              width={40}
+            />
+            <div className="ms-2 flex-grow-1">
+              <small>Paying with:</small>
+              <br />
+              <strong>{maskCardNumber(selectedCard.creditCardNumber)}</strong>
+              <br />
+              <span className="text-secondary" style={{ fontSize: "0.8rem" }}>
+                {selectedCard.firstName} {selectedCard.lastname}
+              </span>
+            </div>
+            <span className="ms-auto">▼</span>
           </div>
-          <span className="ms-auto">›</span>
-        </div>
+        )}
+
+        {showCardList && cards.length > 1 && (
+          <div className="d-flex flex-column gap-2">
+            {cards.map((card, index) => (
+              <div
+                key={index}
+                className={`d-flex align-items-center bg-black text-white p-2 rounded`}
+                style={{
+                  cursor: "pointer",
+                  border:
+                    index === selectedCardIndex
+                      ? "2px solid #00AEEF"
+                      : "1px solid #444",
+                }}
+                onClick={() => {
+                  setSelectedCardIndex(index);
+                  setShowCardList(false);
+                }}
+              >
+                <img
+                  src={getCardLogo(card.creditCardNumber)}
+                  alt="Logo"
+                  width={40}
+                  className="me-2"
+                />
+                <div>
+                  <div>{maskCardNumber(card.creditCardNumber)}</div>
+                  <small className="text-secondary">
+                    {card.firstName} {card.lastname}
+                  </small>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         <button
-          className="btn btn-info text-white w-100 py-3 rounded-pill fw-bold"
+          className="btn btn-info text-white w-100 py-3 rounded-pill fw-bold mt-3"
           onClick={handleTopUp}
         >
           Press to Top Up

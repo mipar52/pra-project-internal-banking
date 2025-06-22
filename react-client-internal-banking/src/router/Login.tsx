@@ -17,32 +17,19 @@ const Login: React.FC = () => {
 
   const navigate = useNavigate();
 
-  /* 
-    const handleLogin = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    const { data } = await axios.post("my-url", {
-      email,
-      password,
-      twoFactionAuthentification: twoFA
-    });
-    
-    // Simulated login
-    setTimeout(() => {
-      setLoading(false);
-      localStorage.setItem("isLoggedIn", "true");
-      navigate("/dashboard");
-    }, 2000);
-  };
-  
-  */
-
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
+
+    // ✅ Check email domain
+    const emailDomain = email.split("@")[1];
+    if (emailDomain !== "algebra.hr") {
+      setError("Only users with an @algebra.hr email can log in.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Simulated API request
       const response = await axios.post(
         "http://localhost:5026/api/User/LoginUser",
         {
@@ -52,13 +39,14 @@ const Login: React.FC = () => {
         }
       );
       console.log(`Response: `, response);
-      // Simulate success & show 2FA modal
       setLoading(false);
       setShow2FA(true);
     } catch (err) {
       console.log(err);
       setLoading(false);
-      setError("Login failed. Please check your credentials.");
+      setError(
+        "Login failed. The email or password is not correct.\nUse the credentials received for Infoeduka."
+      );
     }
   };
 
@@ -189,9 +177,6 @@ const Login: React.FC = () => {
               onChange={(e) => setTwoFACode(e.target.value)}
               placeholder="Enter 6-digit code"
             />
-            {error && (
-              <ErrorPopup message={error} onClose={() => setError(null)} />
-            )}
 
             {showSuccess && (
               <SuccessPopup
@@ -244,6 +229,7 @@ const Login: React.FC = () => {
           </div>
         </div>
       )}
+      {error && <ErrorPopup message={error} onClose={() => setError(null)} />}
     </div>
   );
 };
