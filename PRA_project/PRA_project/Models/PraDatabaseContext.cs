@@ -42,8 +42,8 @@ public partial class PraDatabaseContext : DbContext
 
     // !! Odkomentirati !! ovo je za potrebe testove zakomentirano
     
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //    => optionsBuilder.UseSqlServer("server=localhost;Database=PRA_database;User=sas;Password=;TrustServerCertificate=True;MultipleActiveResultSets=true");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer("server=localhost;Database=PRA_database;User=sa;Password=SQL;TrustServerCertificate=True;MultipleActiveResultSets=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
