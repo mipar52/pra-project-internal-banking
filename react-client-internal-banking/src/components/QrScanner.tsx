@@ -180,7 +180,7 @@ const QrScanner: React.FC = () => {
       );
     } catch (err) {
       console.error("Scanner error:", err);
-      setError("Camera error: " + err);
+      // setError("Camera error: " + err);
       isTransitioningRef.current = false;
     }
   };
