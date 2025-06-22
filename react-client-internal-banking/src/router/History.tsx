@@ -108,9 +108,9 @@ const History: React.FC = () => {
     return () => document.removeEventListener("keydown", handleKey);
   }, []);
 
-  const displayed = filteredTransactions.filter((t) =>
-    t.typeName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const displayed = filteredTransactions
+    .filter((t) => t.typeName.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // 👈 sort newest first
 
   const chartData = filteredTransactions.map((t) => ({
     date: new Date(t.date).toLocaleDateString("hr-HR", {
@@ -194,7 +194,7 @@ const History: React.FC = () => {
           )}
         </div>
         {/* Transaction List */}
-        <h6 className="text-muted mb-2">Recent</h6>
+        <h6 className="mb-2 fw-bold">Recent</h6>
         {displayed.length > 0 ? (
           <div className="list-group">
             {displayed.map((tx, idx) => (
@@ -206,7 +206,7 @@ const History: React.FC = () => {
                   <div className="fw-bold">
                     {getIconForType(tx.typeName)} {tx.typeName}
                   </div>
-                  <div className="small text-muted mt-1">
+                  <div className="small text-white mt-1 fw-bold">
                     {new Date(tx.date).toLocaleString("hr-HR", {
                       day: "2-digit",
                       month: "2-digit",

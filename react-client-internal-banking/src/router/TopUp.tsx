@@ -98,7 +98,7 @@ const TopUp: React.FC = () => {
           },
           body: JSON.stringify({
             emailUser: email,
-            amount: amount * 100,
+            amount: amount,
             date: new Date().toISOString(),
             transactionTypeId: 5,
           }),
@@ -164,7 +164,7 @@ const TopUp: React.FC = () => {
           </button>
         </div>
         <p className="mt-3">
-          Available: <strong>{balance.toFixed(2)} €</strong>
+          Available: <strong>{balance.toLocaleString("en-US")} €</strong>
         </p>
       </div>
 

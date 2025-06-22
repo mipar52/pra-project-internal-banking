@@ -12,11 +12,11 @@ const settings = [
 const Settings: React.FC = () => {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [balance, setBalance] = useState("0.00");
+  const [balance, setBalance] = useState(0.0);
 
   useEffect(() => {
     const stored = localStorage.getItem("balance");
-    setBalance(parseFloat(stored || "0").toFixed(2));
+    setBalance(Number((stored || 0).toLocaleString("en-US")));
   }, []);
 
   const handleItemClick = (item: any) => {
@@ -42,7 +42,7 @@ const Settings: React.FC = () => {
           style={{ height: "60px", objectFit: "contain" }}
         />
         <h5 className="mt-3">Moja ALGEBRA KARTICA</h5>
-        <div className="fs-2 fw-bold">€{balance}</div>
+        <div className="fs-2 fw-bold">{balance} €</div>
         <div className="d-flex justify-content-center gap-2 mt-3">
           <button
             className="btn btn-primary px-4"

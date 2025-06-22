@@ -9,7 +9,7 @@ const Dashboard: React.FC = () => {
   const { width } = useWindowSize();
   const isDesktop = width >= 768;
 
-  const [balance, setBalance] = useState<string>("0.23");
+  const [balance, setBalance] = useState<number>(0.0);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
 
@@ -32,7 +32,7 @@ const Dashboard: React.FC = () => {
         const data = await response.json();
 
         if (data.amount != null) {
-          const formatted = (data.amount / 100).toFixed(2); // assuming cents
+          const formatted = data.amount;
           setBalance(formatted);
           localStorage.setItem("balance", formatted);
         }
@@ -205,7 +205,7 @@ const Dashboard: React.FC = () => {
       >
         <div>
           <h6 className="mb-0">ALGEBRA BANKICA</h6>
-          <h4 className="mb-0">€{balance}</h4>
+          <h4 className="mb-0">{balance.toLocaleString("en-US")} €</h4>
         </div>
         <button
           className="btn"

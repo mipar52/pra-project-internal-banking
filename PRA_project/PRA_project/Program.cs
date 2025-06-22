@@ -14,21 +14,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowFrontend", policy =>
-//    {
-//        policy.WithOrigins("http://localhost:5173") // -> link od localhosta na frontendu
-//              .AllowAnyMethod()
-//              .AllowAnyHeader();
-//    });
-//});
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // your frontend URL
+        policy.WithOrigins("http://localhost:5173") // React client url
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
