@@ -132,7 +132,7 @@ const TopUp: React.FC = () => {
         >
           ✕
         </button>
-        <h5 className="mb-0">My KEKSICA</h5>
+        <h5 className="mb-0">Add balance to account</h5>
       </div>
 
       {/* Amount Section */}

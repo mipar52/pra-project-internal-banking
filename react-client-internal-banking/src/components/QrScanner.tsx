@@ -10,20 +10,33 @@ const QrScanner: React.FC = () => {
   const qrRegionId = "qr-reader";
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const isTransitioningRef = useRef(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const successNavigateRef = useRef<{ path: string; state?: any } | null>(null);
+
   const [scanned, setScanned] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showLoading, setShowLoading] = useState(false);
+  const [scannerPausedDueToError, setScannerPausedDueToError] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportHeight(window.innerHeight);
+    };
+
+    handleResize(); // set on mount
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const navigate = useNavigate();
 
   const startScanner = async () => {
     if (isTransitioningRef.current) return;
 
     const container = document.getElementById(qrRegionId);
-    if (!container) {
-      console.error("QR container not found.");
-      return;
-    }
+    if (!container) return;
     container.innerHTML = "";
 
     if (scannerRef.current === null) {
@@ -31,13 +44,12 @@ const QrScanner: React.FC = () => {
     }
 
     const scanner = scannerRef.current;
-
     const state = scanner.getState();
+
     if (
       state !== Html5QrcodeScannerState.NOT_STARTED &&
       state !== Html5QrcodeScannerState.PAUSED
     ) {
-      console.warn("Scanner is currently transitioning or already started.");
       return;
     }
 
@@ -66,22 +78,19 @@ const QrScanner: React.FC = () => {
           if (scanned || isTransitioningRef.current) return;
 
           isTransitioningRef.current = true;
-          // scanner.pause();
           setScanned(decodedText);
 
           try {
             const cleaned = decodedText.replace("AlgebraQR", "");
-            console.log(`cleaned: ${cleaned}`);
             const parsed = JSON.parse(cleaned);
-            console.log(`parsed: ${parsed}`);
 
             if (!parsed.type || parsed.type !== "ALGEBRAQR") {
               setError("Not an official Algebra QR code.");
-              scanner.resume();
+              await scanner.pause();
+              setScannerPausedDueToError(true);
               return;
             }
-            console.log("scanner paused!");
-            //   scanner.pause();
+
             const userEmail = localStorage.getItem("userEmail");
             const jwt = localStorage.getItem("jwtToken");
 
@@ -93,51 +102,75 @@ const QrScanner: React.FC = () => {
             if (parsed.friendEmail) {
               // Friend QR
               setShowLoading(true);
-              await axiosInstance.post(
-                "http://localhost:5026/api/Friend/CreateFriendByMail",
-                {
-                  userEmail,
-                  friendEmail: parsed.friendEmail,
-                },
-                {
-                  headers: { Authorization: `Bearer ${jwt}` },
+              try {
+                await axiosInstance.post(
+                  "http://localhost:5026/api/Friend/CreateFriendByMail",
+                  {
+                    userEmail,
+                    friendEmail: parsed.friendEmail,
+                  },
+                  {
+                    headers: { Authorization: `Bearer ${jwt}` },
+                  }
+                );
+
+                setSuccess(
+                  `Successfully added ${parsed.friendEmail} to friends!`
+                );
+                successNavigateRef.current = { path: "/all-friends" };
+
+                timeoutRef.current = setTimeout(() => {
+                  navigate("/all-friends");
+                }, 4000);
+              } catch (error: any) {
+                if (!parsed.friendEmail.endsWith("algebra.hr")) {
+                  setError(
+                    `This friend QR code is invalid.\nEmail ${parsed.friendEmail} is not a valid Algebra account.`
+                  );
+                  await scanner.pause();
+                  setScannerPausedDueToError(true);
+                  return;
                 }
-              );
-              setSuccess(
-                `Successfully added ${parsed.friendEmail} to friends!\nRedirecting to your friends...`
-              );
-              setTimeout(() => {
-                navigate("/all-friends");
-              }, 4000);
+                console.log(error.response.data);
+                const msg =
+                  error?.response?.data === "Friend failed"
+                    ? `You already have ${parsed.friendEmail} as a friend.`
+                    : `This friend QR code is invalid.\nEmail ${parsed.friendEmail} is not a valid Algebra address.`;
+                setError(error?.response?.data);
+                await scanner.pause();
+                setScannerPausedDueToError(true);
+              }
             } else if (parsed.amount && parsed.transactionTypeId) {
               // Payment QR
-              setSuccess(
-                `Successfully obtained the payment QR code! Good job!\nRedirecting to the payment screen...`
-              );
-              setTimeout(() => {
+              setSuccess("Payment QR scanned successfully!");
+              successNavigateRef.current = {
+                path: "/enter-manually",
+                state: {
+                  amount: parsed.amount,
+                  transactionTypeId: parsed.transactionTypeId,
+                },
+              };
+
+              timeoutRef.current = setTimeout(() => {
                 navigate("/enter-manually", {
-                  state: {
-                    amount: parsed.amount,
-                    transactionTypeId: parsed.transactionTypeId,
-                  },
+                  state: parsed,
                 });
               }, 4000);
             } else {
               setError("Unsupported QR content.");
+              await scanner.pause();
+              setScannerPausedDueToError(true);
             }
           } catch (err) {
             console.error("QR parse error:", err);
-            scanner.pause();
-            scanner.resume();
             setError("Invalid QR format.");
-            navigate("/dashboard");
+            await scanner.pause();
+            setScannerPausedDueToError(true);
           } finally {
             setShowLoading(false);
             try {
               await scanner.pause();
-            } catch (err) {
-              console.warn("Scanner stop/clear failed", err);
-            }
+            } catch {}
             isTransitioningRef.current = false;
           }
         },
@@ -153,36 +186,60 @@ const QrScanner: React.FC = () => {
   };
 
   useEffect(() => {
-    requestAnimationFrame(() => {
-      startScanner();
-    });
+    requestAnimationFrame(() => startScanner());
 
     return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       scannerRef.current?.stop().catch(() => {});
     };
   }, []);
 
+  const handleSuccessClose = () => {
+    setSuccess(null);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    if (successNavigateRef.current) {
+      navigate(successNavigateRef.current.path, {
+        state: successNavigateRef.current.state,
+      });
+    }
+  };
+
   return (
     <div
-      className="d-flex flex-column align-items-center justify-content-center position-relative"
+      className="position-absolute d-flex flex-column justify-content-start align-items-center"
       style={{
-        width: "100vw",
-        height: "100vh",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         backgroundColor: "black",
-        overflow: "hidden",
+        zIndex: 0,
+        paddingTop: "6rem", // Moves scanner further down
       }}
     >
       {showLoading && <LoadingBar message="Processing QR code..." />}
       {success && (
-        <SuccessPopup message={success} onClose={() => setSuccess(null)} />
+        <SuccessPopup message={success} onClose={handleSuccessClose} />
       )}
-      {error && <ErrorPopup message={error} onClose={() => setError(null)} />}
+      {error && (
+        <ErrorPopup
+          message={error}
+          onClose={async () => {
+            setError(null);
+            if (scannerPausedDueToError && scannerRef.current) {
+              await scannerRef.current.resume();
+              setScannerPausedDueToError(false);
+            }
+          }}
+        />
+      )}
 
       <div
         className="position-absolute top-0 start-0 end-0 py-3 px-4 text-white"
-        style={{ backgroundColor: "#00AEEF", zIndex: 10 }}
+        style={{ backgroundColor: "black", zIndex: 10 }}
       >
-        <h5 className="mb-0 text-center">Skeniraj i plati</h5>
+        <h5 className="mb-0 text-center">Scan the QR code</h5>
       </div>
 
       <button
@@ -196,12 +253,19 @@ const QrScanner: React.FC = () => {
       <div
         id={qrRegionId}
         style={{
-          width: "100%",
-          height: "100%",
-          marginTop: "3.5rem",
+          width: "90%",
+          maxWidth: "400px",
+          aspectRatio: "1 / 1",
+          border: "2px solid white",
+          borderRadius: "1rem",
+          overflow: "hidden",
           position: "relative",
         }}
       />
+      <h5 className="mb-0 text-center text-white" style={{ marginTop: "2rem" }}>
+        Only official AlgebraQR QR codes are accepted.<p></p>The university is
+        not responsible for unauthorized QR codes.
+      </h5>
     </div>
   );
 };
