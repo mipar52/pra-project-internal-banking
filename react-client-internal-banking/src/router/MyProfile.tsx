@@ -1,142 +1,195 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import algebraLogo from "../assets/algebra-logo.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import QRCode from "react-qr-code";
 import LoadingBar from "../components/LoadingBar";
-import SuccessPopup from "../components/SuccessPopup";
 import ErrorPopup from "../components/ErrorPopup";
+
+interface UserData {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  phoneNumber: string;
+  studyProgramme: string;
+  role: string;
+  profilePictureUrl: string | null;
+}
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
-
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [profileImage, setProfileImage] = useState<string>("");
-
-  const [loading, setLoading] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  useEffect(() => {
+    const fetchUser = async () => {
+      const email = localStorage.getItem("userEmail");
+      const token = localStorage.getItem("jwtToken");
 
-  const handleSave = async () => {
-    const payload = {
-      firstName,
-      lastName,
-      phoneNumber,
-      profilePictureUrl: profileImage,
-    };
-
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      await axios.post("http://localhost:5026/api/User/CreateUser", payload);
-      setShowSuccess(true);
-    } catch (err: any) {
-      let message = "Failed to update profile.";
-      if (err.response?.data?.errors) {
-        // Get the first error message from validation
-        const errors = err.response.data.errors;
-        const firstField = Object.keys(errors)[0];
-        message = errors[firstField][0];
-      } else if (typeof err.response?.data === "string") {
-        message = err.response.data;
+      if (!email || !token) {
+        setErrorMsg("User not logged in.");
+        setLoading(false);
+        return;
       }
 
-      setErrorMsg(message);
-    } finally {
-      setLoading(false);
-    }
-  };
+      try {
+        const response = await axios.get(
+          `http://localhost:5026/api/User/GetUserByMail?email=${encodeURIComponent(
+            email
+          )}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUser(response.data);
+      } catch (err) {
+        console.error("Error fetching user:", err);
+        setErrorMsg("Failed to load user data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  if (loading) return <LoadingBar message="Loading profile..." />;
+  if (errorMsg || !user)
+    return (
+      <div className="text-white p-4">
+        <ErrorPopup
+          message={errorMsg || "Unknown error."}
+          onClose={() => navigate("/")}
+        />
+      </div>
+    );
+
+  const qrData = `AlgebraQR${JSON.stringify({
+    type: "ALGEBRAQR",
+    friendEmail: user.emailAddress,
+  })}`;
 
   return (
     <div
-      className="min-vh-100 bg-black text-white d-flex flex-column align-items-center p-4"
-      style={{ paddingBottom: "100px" }}
+      className="min-vh-100 bg-black text-white d-flex flex-column align-items-center px-3 py-5"
+      style={{ backgroundColor: "#1D1D1B" }}
     >
-      {loading && <LoadingBar message="Updating profile..." />}
-      {showSuccess && (
-        <SuccessPopup
-          message="Profile updated successfully!"
-          onClose={() => navigate("/settings")}
-        />
-      )}
-      {errorMsg && (
-        <ErrorPopup message={errorMsg} onClose={() => setErrorMsg(null)} />
-      )}
-
       <img
         src={algebraLogo}
         alt="Algebra Logo"
         className="mb-4"
         style={{ height: 60 }}
       />
-      <h4 className="mb-4">Edit Profile</h4>
+      <button
+        className="btn btn-outline-light align-self-start mb-3"
+        onClick={() => navigate(-1)}
+        style={{ borderRadius: "999px", fontSize: "0.9rem" }}
+      >
+        ← Back
+      </button>
 
-      {/* Profile Image */}
-      <div className="text-center mb-4">
-        {profileImage ? (
+      <div
+        className="bg-dark text-white rounded shadow-lg p-4 w-100"
+        style={{ maxWidth: "540px" }}
+      >
+        {/* Profile Picture */}
+        <div className="text-center mb-4">
           <img
-            src={profileImage}
+            src={
+              user.profilePictureUrl ||
+              `https://i.pravatar.cc/150?u=${user.emailAddress}`
+            }
             alt="Profile"
-            className="rounded-circle mb-2"
-            style={{ width: 100, height: 100, objectFit: "cover" }}
+            className="rounded-circle"
+            style={{
+              width: 110,
+              height: 110,
+              objectFit: "cover",
+              border: "3px solid #F58220",
+            }}
           />
-        ) : (
-          <div
-            className="rounded-circle bg-secondary mb-2 d-flex justify-content-center align-items-center"
-            style={{ width: 100, height: 100 }}
-          >
-            👤
-          </div>
-        )}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="form-control bg-dark text-white"
-        />
-      </div>
+          <h4 className="mt-3 fw-bold">
+            {user.firstName} {user.lastName}
+          </h4>
+          <p className="text-muted mb-0">{user.role}</p>
+        </div>
 
-      {/* Form Fields */}
-      <div className="w-100" style={{ maxWidth: 400 }}>
-        <div className="mb-3">
-          <label className="form-label">First Name</label>
-          <input
-            className="form-control bg-dark text-white"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
+        {/* User Info Fields */}
+        <div className="row g-3 mb-4">
+          <div className="col-md-6">
+            <label className="form-label text-info mb-1">First Name</label>
+            <div
+              className="form-control bg-black text-white border-secondary"
+              readOnly
+            >
+              {user.firstName}
+            </div>
+          </div>
+          <div className="col-md-6">
+            <label className="form-label text-info mb-1">Last Name</label>
+            <div
+              className="form-control bg-black text-white border-secondary"
+              readOnly
+            >
+              {user.lastName}
+            </div>
+          </div>
+          <div className="col-md-12">
+            <label className="form-label text-info mb-1">Email</label>
+            <div
+              className="form-control bg-black text-white border-secondary"
+              readOnly
+            >
+              {user.emailAddress}
+            </div>
+          </div>
+          <div className="col-md-6">
+            <label className="form-label text-info mb-1">Phone Number</label>
+            <div
+              className="form-control bg-black text-white border-secondary"
+              readOnly
+            >
+              {user.phoneNumber}
+            </div>
+          </div>
+          <div className="col-md-6">
+            <label className="form-label text-info mb-1">Study Programme</label>
+            <div
+              className="form-control bg-black text-white border-secondary"
+              readOnly
+            >
+              {user.studyProgramme}
+            </div>
+          </div>
+          <div className="col-md-12">
+            <label className="form-label text-info mb-1">Role</label>
+            <div
+              className="form-control bg-black text-white border-secondary"
+              readOnly
+            >
+              {user.role}
+            </div>
+          </div>
         </div>
-        <div className="mb-3">
-          <label className="form-label">Last Name</label>
-          <input
-            className="form-control bg-dark text-white"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
+
+        {/* QR Code Section */}
+        <div className="text-center mt-4">
+          <h5 className="text-info mb-3">Your QR Code</h5>
+          <div className="bg-white p-3 rounded d-inline-block border border-info shadow-sm">
+            <QRCode
+              value={qrData}
+              size={200}
+              fgColor="#000000"
+              bgColor="#FFFFFF"
+            />
+          </div>
+          <p className="mt-3 text-secondary" style={{ fontSize: "0.9rem" }}>
+            Share this code to let others add you as a friend.
+          </p>
         </div>
-        <div className="mb-3">
-          <label className="form-label">Phone Number</label>
-          <input
-            className="form-control bg-dark text-white"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          />
-        </div>
-        <button className="btn btn-info w-100" onClick={handleSave}>
-          Save Profile
-        </button>
       </div>
     </div>
   );

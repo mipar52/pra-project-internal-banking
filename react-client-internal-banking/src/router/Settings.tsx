@@ -6,7 +6,6 @@ import LogoutModal from "../components/LogoutModal";
 const settings = [
   { label: "Cards Settings", route: "/select-card", icon: "💳" },
   { label: "My Profile", route: "/profile", icon: "👤" },
-  { label: "Parking Settings", route: "/parking-settings", icon: "🚗" },
   { label: "Log Out", route: "/", icon: "⏻", logout: true },
 ];
 
